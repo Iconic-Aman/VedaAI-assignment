@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PlantDiagram } from './PlantDiagram';
 
-// Reason: Right pane for answer sheet viewing, zoom, pagination, and region highlight
-export const AnswerSheetViewer = ({ selectedQuestionId }) => {
+// Reason: AnswerSheetViewer matching Pixel Perfect UI lined paper, zoom, pagination, and region highlights
+export const AnswerSheetViewer = ({ selectedQuestionId, sessionData }) => {
   const [zoom, setZoom] = useState(100);
   const [page, setPage] = useState(1);
-  const totalPages = 4;
+  const totalPages = sessionData?.answer_pages?.length || 4;
   const highlightRef = useRef(null);
 
   useEffect(() => {
@@ -14,99 +13,111 @@ export const AnswerSheetViewer = ({ selectedQuestionId }) => {
     }
   }, [selectedQuestionId, page]);
 
-  const handleZoom = (delta) => {
-    setZoom((prev) => Math.min(200, Math.max(50, prev + delta)));
-  };
-
   const isQ2 = selectedQuestionId === 2;
+  const answerPageImg = sessionData?.answer_pages?.[page - 1];
 
   return (
-    <div className="results-right">
-      <div className="results-right-head">
-        <h3>Answer Sheet</h3>
-        <div className="sheet-controls">
-          <div className="zoom-control">
-            <button className="zoom-btn" onClick={() => handleZoom(-10)} title="Zoom Out">
-              −
+    <section className="review-sheet-pane">
+      {/* Dark Top Header Bar */}
+      <div className="review-sheet-header">
+        <h2 className="sheet-header-title">Answer Sheet</h2>
+        <div className="sheet-header-controls">
+          {/* Zoom Pill */}
+          <div className="control-pill">
+            <button
+              type="button"
+              aria-label="Zoom out"
+              onClick={() => setZoom((z) => Math.max(50, z - 10))}
+              className="pill-icon-btn"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
             </button>
             <span>{zoom}%</span>
-            <button className="zoom-btn" onClick={() => handleZoom(10)} title="Zoom In">
-              +
+            <button
+              type="button"
+              aria-label="Zoom in"
+              onClick={() => setZoom((z) => Math.min(200, z + 10))}
+              className="pill-icon-btn"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
             </button>
           </div>
-          <div className="page-control">
+
+          {/* Page Pill */}
+          <div className="control-pill">
             <button
-              className="zoom-btn"
+              type="button"
+              aria-label="Previous page"
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              title="Previous Page"
+              className="pill-icon-btn"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
             </button>
-            <span>
-              Page {page} of {totalPages}
-            </span>
+            <span>Page {page} of {totalPages}</span>
             <button
-              className="zoom-btn"
+              type="button"
+              aria-label="Next page"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              title="Next Page"
+              className="pill-icon-btn"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="sheet-viewport">
-        <div
-          className="sheet-page"
-          style={{ transform: `scale(${zoom / 100})` }}
-        >
-          {page === 1 ? (
-            <>
-              <div className="ans-block">
-                <span className="q-label">Q1.</span> Photosynthesis is the process used by green
-                plants and some other organisms to convert light energy into chemical energy.
-                <div className="ans-eq">
-                  6CO<sub>2</sub> + 6H<sub>2</sub>O &nbsp;—Light / Chlorophyll→&nbsp; C<sub>6</sub>H
-                  <sub>12</sub>O<sub>6</sub> + 6O<sub>2</sub>
+      {/* Sheet Viewport */}
+      <div className="review-sheet-body">
+        {answerPageImg ? (
+          <div className="real-image-wrapper" style={{ transform: `scale(${zoom / 100})` }}>
+            <img src={answerPageImg} alt={`Answer Sheet Page ${page}`} className="real-sheet-image" />
+          </div>
+        ) : (
+          <div
+            className="lined-notebook-paper"
+            style={{ transform: `scale(${zoom / 100})` }}
+          >
+            {page === 1 ? (
+              <>
+                <p>
+                  <span className="font-bold">Q1.</span> Photosynthesis is the process used by green plants and some other
+                  organisms to convert light energy into chemical energy.
+                </p>
+                <p className="chem-equation-box">
+                  6CO₂ + 6H₂O →(Light / Chlorophyll)→ C₆H₁₂O₆ + 6O₂
+                </p>
+                <p>Sunlight ↓ &nbsp; Carbon dioxide → 🌱 ← Oxygen &nbsp; Water ↑</p>
+
+                {/* Highlighted Answer Region for Q2 */}
+                <div
+                  ref={highlightRef}
+                  className={`answer-highlight-card ${isQ2 ? 'active-highlight' : ''}`}
+                >
+                  {isQ2 && <span className="highlight-tag">Q2</span>}
+                  <p>
+                    <span className="font-bold">Q2.</span> The process mainly occurs in the chloroplast of the plant cell. It has two main stages:
+                  </p>
+                  <p>1. Light reaction — Captures light energy.</p>
+                  <p>2. Dark reaction — Uses energy to make glucose.</p>
                 </div>
-                <PlantDiagram />
-              </div>
 
-              <div
-                ref={highlightRef}
-                className={`ans-block ${isQ2 ? 'highlight' : ''}`}
-                id="ans-q2"
-              >
-                {isQ2 && <span className="ans-tag">Q2</span>}
-                <span className="q-label">Q2.</span> The process mainly occurs in the chloroplast
-                of the plant cell. It has two main stages:
+                <p style={{ marginTop: '28px' }}>
+                  <span className="font-bold">Q3.</span> Chloroplasts contain chlorophyll a and b, which absorb light and
+                  drive the light-dependent reactions in the thylakoid membranes.
+                </p>
+              </>
+            ) : (
+              <div className="empty-page-notice">
+                Handwritten answer content for Page {page}.
                 <br />
-                1. Light reaction – Captures light energy.
-                <br />
-                2. Dark reaction – Uses energy to make glucose.
+                No mapped questions on this page.
               </div>
-
-              <div className="ans-block" style={{ opacity: 0.55 }}>
-                <span className="q-label">Q1.</span> Photosynthesis is the process used by green
-                plants and some other organisms to convert light energy into chemical energy.
-              </div>
-            </>
-          ) : (
-            <div className="page-placeholder">
-              Additional handwritten answer content on Page {page}.
-              <br />
-              No mapped question is highlighted on this page.
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };

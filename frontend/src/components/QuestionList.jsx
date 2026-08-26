@@ -1,82 +1,89 @@
 import React, { useState } from 'react';
 
-// Reason: Helper to determine score badge CSS class
-function scoreClass(q) {
-  if (q.score === 0) return 'zero';
-  if (q.score === q.total) return 'full';
-  return 'partial';
+function getTone(q) {
+  if (q.score === 0) return 'tone-bad';
+  if (q.score === q.total) return 'tone-good';
+  return 'tone-partial';
 }
 
-// Reason: Left pane listing extracted questions with accordion & feedback
+// Reason: QuestionList component matching Pixel Perfect UI ExamReview.tsx
 export const QuestionList = ({ questions, selectedId, onSelectQuestion }) => {
-  const [openMap, setOpenMap] = useState({ 2: true });
+  const [openIds, setOpenIds] = useState([2]);
 
-  const toggleItem = (n) => {
-    setOpenMap((prev) => ({ ...prev, [n]: !prev[n] }));
+  const toggle = (n) => {
+    setOpenIds((prev) =>
+      prev.includes(n) ? prev.filter((x) => x !== n) : [...prev, n]
+    );
     onSelectQuestion(selectedId === n ? null : n);
   };
 
-  const handleExpandAll = () => {
-    const allOpen = questions.every((q) => openMap[q.n]);
-    const next = {};
-    questions.forEach((q) => {
-      next[q.n] = !allOpen;
-    });
-    setOpenMap(next);
+  const allOpen = questions.length > 0 && openIds.length === questions.length;
+
+  const handleToggleAll = () => {
+    setOpenIds(allOpen ? [] : questions.map((q) => q.n));
   };
 
-  const allOpen = questions.length > 0 && questions.every((q) => openMap[q.n]);
-
   return (
-    <div className="results-left">
-      <div className="results-left-head">
-        <h3>
-          Extracted Questions <span>(from question paper)</span>
-        </h3>
-        <button className="link-btn" onClick={handleExpandAll}>
+    <section className="review-questions-pane">
+      <div className="review-questions-header">
+        <h2 className="review-header-title">
+          Extracted Questions <span className="review-header-sub">(from question paper)</span>
+        </h2>
+        <button
+          type="button"
+          onClick={handleToggleAll}
+          className="review-toggle-all-btn"
+        >
           {allOpen ? 'Collapse All' : 'Expand All'}
         </button>
       </div>
 
-      <div className="question-list">
+      <div className="review-questions-list">
         {questions.map((q) => {
-          const isOpen = !!openMap[q.n];
+          const isOpen = openIds.includes(q.n);
           const isSelected = selectedId === q.n;
+          const toneClass = getTone(q);
 
           return (
             <div
               key={q.n}
-              className={`q-item ${isSelected ? 'selected' : ''} ${isOpen ? 'open' : ''}`}
+              className={`question-row-card ${isOpen || isSelected ? 'active-row' : ''}`}
             >
-              <div className="q-item-head" onClick={() => toggleItem(q.n)}>
-                <span className="q-num">{q.n}</span>
-                <span className="q-text">{q.text}</span>
-                <span className={`q-score ${scoreClass(q)}`}>
-                  {q.score}/{q.total}
+              <div className="question-row-header" onClick={() => toggle(q.n)}>
+                <span className={`question-number-badge ${isOpen ? 'active-badge' : ''}`}>
+                  {q.n}
                 </span>
-                <svg
-                  className="q-chev"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <p className="question-row-text">{q.text}</p>
+                <span className={`question-score-pill ${toneClass}`}>
+                  {q.score} / {q.total}
+                </span>
+                <button
+                  type="button"
+                  aria-label={isOpen ? 'Collapse question' : 'Expand question'}
+                  className="question-row-chevron-btn"
                 >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="chevron-icon">
+                    {isOpen ? (
+                      <polyline points="18 15 12 9 6 15" />
+                    ) : (
+                      <polyline points="6 9 12 15 18 9" />
+                    )}
+                  </svg>
+                </button>
               </div>
 
-              <div className="q-body">
-                <div className="q-feedback">
-                  <div className="q-feedback-label">AI Feedback</div>
-                  <div className="q-feedback-text">{q.feedback}</div>
+              {isOpen && (
+                <div className="question-feedback-drawer">
+                  <div className="question-feedback-inner">
+                    <p className="feedback-heading">AI Feedback</p>
+                    <p className="feedback-content">{q.feedback}</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };

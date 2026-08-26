@@ -7,8 +7,8 @@ function fmtSize(bytes) {
   return `${Math.max(1, Math.round(bytes / 1024 / 1024))}MB`;
 }
 
-// Reason: UploadScreen with active start mapping once question paper is uploaded
-export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
+// Reason: UploadScreen with immediate extraction trigger on question upload matching Pixel Perfect UI
+export const UploadScreen = ({ files, setFiles, onStartMapping, onDirectQuestionUpload }) => {
   const targetRef = useRef('question');
   const inputRef = useRef(null);
 
@@ -21,16 +21,18 @@ export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
     const f = e.target.files?.[0];
     if (!f) return;
     const kind = targetRef.current;
-    setFiles((prev) => ({
-      ...prev,
-      [kind]: {
-        file: f,
-        name: f.name,
-        size: fmtSize(f.size),
-        pages: '2 Pages'
-      }
-    }));
+    const info = {
+      file: f,
+      name: f.name,
+      size: fmtSize(f.size),
+      pages: '2 Pages'
+    };
+    setFiles((prev) => ({ ...prev, [kind]: info }));
     e.target.value = '';
+
+    if (kind === 'question' && onDirectQuestionUpload) {
+      onDirectQuestionUpload(f);
+    }
   };
 
   const handleRemove = (which) => {
@@ -44,7 +46,7 @@ export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
       <h1 className="upload-title">
         Upload <span className="highlight-brand">Question Paper &amp; Answer Sheets</span>
       </h1>
-      <p className="upload-sub">Upload files to get started</p>
+      <p className="upload-sub">Upload both files to get started</p>
 
       {/* Framer Hero Avatar */}
       <div className="hero-avatar-wrap">
