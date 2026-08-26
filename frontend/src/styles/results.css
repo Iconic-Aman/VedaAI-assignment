@@ -1,17 +1,21 @@
-/* Extracting Screen */
+/* Extracting Screen with Opacity Blinking Stars */
 .extracting-full-container {
   flex: 1; display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-3xl); background: var(--card); padding: 80px 24px;
 }
 .extracting-center-box { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .extracting-stars-stage { position: relative; width: 104px; height: 104px; }
-.star-large { position: absolute; right: 0; top: 0; width: 64px; height: 64px; color: var(--brand); animation: pulse 1.6s infinite ease-in-out; }
-.star-medium { position: absolute; bottom: 0; left: 4px; width: 44px; height: 44px; color: var(--brand); animation: pulse 1.6s infinite ease-in-out 0.2s; }
-.star-small { position: absolute; bottom: 10px; right: 8px; width: 15px; height: 15px; color: rgba(249, 87, 33, 0.8); animation: pulse 1.6s infinite ease-in-out 0.4s; }
-.star-dot { position: absolute; left: 6px; top: 30px; width: 9px; height: 9px; border-radius: 50%; background: var(--brand); animation: pulse 1.6s infinite ease-in-out 0.6s; }
-.extracting-heading { margin-top: 20px; font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.025em; color: var(--foreground); animation: pulse 1.6s infinite ease-in-out; }
-.extracting-caption { margin-top: 6px; font-family: var(--font-display); font-size: 16px; color: var(--muted-foreground); }
-@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
+.star-large { position: absolute; right: 0; top: 0; width: 64px; height: 64px; color: var(--brand); animation: starBlink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.star-medium { position: absolute; bottom: 0; left: 4px; width: 44px; height: 44px; color: var(--brand); animation: starBlink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 0.2s; }
+.star-small { position: absolute; bottom: 10px; right: 8px; width: 15px; height: 15px; color: rgba(249, 87, 33, 0.8); animation: starBlink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 0.4s; }
+.star-dot { position: absolute; left: 6px; top: 30px; width: 9px; height: 9px; border-radius: 50%; background: var(--brand); animation: starBlink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 0.6s; }
+.extracting-heading { margin-top: 20px; font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.025em; color: var(--foreground); }
+.extracting-caption { margin-top: 2px; font-family: var(--font-display); font-size: 16px; color: var(--muted-foreground); }
+
+@keyframes starBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
 
 /* Results Split Screen */
 .screen-results { display: grid; grid-template-columns: 1fr 1fr; flex: 1; overflow: hidden; border-bottom-left-radius: var(--radius-3xl); border-bottom-right-radius: var(--radius-3xl); }
