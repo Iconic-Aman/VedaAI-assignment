@@ -2,6 +2,7 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
+  background: #ebedef;
 }
 
 .main {
@@ -19,7 +20,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
   flex: none;
 }
 
@@ -40,8 +41,8 @@
 }
 
 .icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
@@ -49,7 +50,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--text-soft);
+  color: #55585f;
   padding: 0;
   position: relative;
   transition: background 0.15s ease, color 0.15s ease;
@@ -62,39 +63,38 @@
 
 .icon-btn.has-dot .dot {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 7px;
+  right: 7px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #ff5722;
 }
 
 .user-chip {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f7f8f9;
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #e0e2e6;
   border-radius: 20px;
-  padding: 4px 10px 4px 4px;
+  padding: 3px 10px 3px 4px;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text);
 }
 
-.user-chip .avatar {
-  width: 24px;
-  height: 24px;
+.user-avatar-wrap {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: #2b3a63;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
+  background: #f0f2f5;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
+  overflow: hidden;
 }
 
 .user-chip .chev {
@@ -108,6 +108,7 @@
   position: relative;
   overflow: hidden;
   display: flex;
+  background: radial-gradient(circle at 50% 30%, #f4f5f7 0%, #e9ebef 100%);
 }
 
 .screen {

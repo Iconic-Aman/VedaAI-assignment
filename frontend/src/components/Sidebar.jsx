@@ -6,11 +6,20 @@ import {
   IconExams,
   IconLibrary,
   IconSettings,
-  IconShield,
   IconSpark
 } from './Icons';
 
-// Reason: Sidebar navigation with collapsible state
+// Reason: School green emblem badge matching the UI design
+const SchoolEmblem = () => (
+  <svg viewBox="0 0 32 32" fill="none" className="school-emblem-svg">
+    <circle cx="16" cy="16" r="14" fill="#eaf7ed" stroke="#2e7d32" strokeWidth="1.5" />
+    <path d="M16 8l4 6h-8l4-6z" fill="#2e7d32" />
+    <path d="M16 12l5 7h-10l5-7z" fill="#2e7d32" opacity="0.8" />
+    <rect x="15" y="19" width="2" height="5" fill="#4e342e" />
+  </svg>
+);
+
+// Reason: Sidebar navigation matching Figma screenshot
 export const Sidebar = ({ collapsed, setCollapsed }) => {
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -26,7 +35,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
             onClick={() => setCollapsed(true)}
             title="Collapse sidebar"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: 18, height: 18 }}>
               <rect x="3" y="4" width="18" height="16" rx="3" />
               <line x1="9" y1="4" x2="9" y2="20" />
             </svg>
@@ -49,7 +58,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         <div className="sidebar-bottom">
           <button className="nav-item"><IconSettings />Settings</button>
           <div className="school-card">
-            <div className="school-logo"><IconShield /></div>
+            <div className="school-logo"><SchoolEmblem /></div>
             <div className="school-meta">
               <div className="school-name">Delhi Public School</div>
               <div className="school-loc">Bokaro Steel City</div>
@@ -71,14 +80,14 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           <button className="rail-item active" title="Exams"><IconExams /></button>
           <button className="rail-item" title="My Library"><IconLibrary /></button>
         </div>
-        <div className="rail-bottom" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div className="rail-shield" title="Delhi Public School"><IconShield /></div>
+        <div className="rail-bottom" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+          <div className="rail-shield" title="Delhi Public School"><SchoolEmblem /></div>
           <button
             className="icon-btn ghost"
             onClick={() => setCollapsed(false)}
             title="Expand sidebar"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
               <polyline points="7 17 12 12 7 7" />
               <polyline points="13 17 18 12 13 7" />
             </svg>
