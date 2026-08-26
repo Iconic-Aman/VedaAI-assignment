@@ -6,21 +6,51 @@ import { ExtractingScreen } from './components/ExtractingScreen';
 import { QuestionList } from './components/QuestionList';
 import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
+import { uploadFiles, processSession, getSessionData } from './services/api';
 
-// Reason: Root App component orchestrating screens and state matching Pixel Perfect UI
+// Reason: Root App component orchestrating API integration, screens, and fallback
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [files, setFiles] = useState({ question: null, answer: null });
   const [questions, setQuestions] = useState(DUMMY_QUESTIONS);
   const [selectedQuestionId, setSelectedQuestionId] = useState(2);
+  const [sessionData, setSessionData] = useState(null);
 
-  const handleStartMapping = () => {
+  const handleStartMapping = async () => {
     setCurrentScreen('extracting');
     setSidebarCollapsed(true);
-    setTimeout(() => {
+
+    try {
+      if (files.question?.file && files.answer?.file) {
+        const uploadRes = await uploadFiles(files.question.file, files.answer.file);
+        if (uploadRes?.session_id) {
+          await processSession(uploadRes.session_id);
+          const fullData = await getSessionData(uploadRes.session_id);
+          if (fullData?.questions?.length) {
+            const mappedQs = fullData.questions.map((q, idx) => {
+              const grade = fullData.grading?.[q.id] || { score: q.max_score, total: q.max_score, feedback: 'Graded successfully.' };
+              return {
+                n: idx + 1,
+                id: q.id,
+                text: q.text,
+                score: grade.score,
+                total: grade.total,
+                feedback: grade.feedback,
+                full_label: q.full_label
+              };
+            });
+            setQuestions(mappedQs);
+            setSessionData(fullData);
+            setSelectedQuestionId(mappedQs[0]?.n || 1);
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Backend unavailable, rendering demo data:', err);
+    } finally {
       setCurrentScreen('results');
-    }, 2200);
+    }
   };
 
   const handleBack = () => {
@@ -62,6 +92,7 @@ export default function App() {
               />
               <AnswerSheetViewer
                 selectedQuestionId={selectedQuestionId}
+                sessionData={sessionData}
               />
             </div>
           )}
