@@ -1,0 +1,6 @@
+/* Reason: Import all modular CSS stylesheets */
+@import './styles/variables.css';
+@import './styles/layout.css';
+@import './styles/sidebar.css';
+@import './styles/upload.css';
+@import './styles/results.css';

@@ -1,0 +1,220 @@
+.upload-wrap {
+  max-width: 680px;
+  margin: 32px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.upload-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+}
+
+.upload-title .accent,
+.upload-label .accent {
+  color: var(--accent);
+}
+
+.upload-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 28px 0;
+}
+
+.hero-avatar {
+  margin-bottom: 28px;
+}
+
+.hero-ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2px dashed #dcdfe3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-photo {
+  font-size: 40px;
+  user-select: none;
+}
+
+.hero-dot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-dot svg {
+  width: 11px;
+  height: 11px;
+}
+
+.hero-dot.d1 { top: -4px; left: 14px; }
+.hero-dot.d2 { top: -4px; right: 14px; }
+.hero-dot.d3 { bottom: -4px; left: 14px; }
+.hero-dot.d4 { bottom: -4px; right: 14px; }
+
+.upload-cards {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.upload-card {
+  flex: 1;
+  background: #ffffff;
+  border: 1.5px dashed #cbd0d6;
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-card);
+}
+
+.upload-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.upload-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.file-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8f9fa;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  width: 100%;
+  text-align: left;
+}
+
+.file-icon.pdf {
+  background: #ff5252;
+  color: #fff;
+  font-weight: 800;
+  font-size: 10px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.file-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.file-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.file-remove:hover {
+  color: var(--red-text);
+}
+
+.file-remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+.start-mapping-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 4px 14px rgba(255, 106, 61, 0.35);
+}
+
+.start-mapping-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.start-mapping-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.start-hint {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
