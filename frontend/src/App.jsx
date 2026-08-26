@@ -14,7 +14,7 @@ export default function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [files, setFiles] = useState({ question: null, answer: null });
   const [questions, setQuestions] = useState(DUMMY_QUESTIONS);
-  const [selectedQuestionId, setSelectedQuestionId] = useState(2);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(1);
   const [sessionData, setSessionData] = useState(null);
 
   const handleStartMapping = async () => {
@@ -22,14 +22,18 @@ export default function App() {
     setSidebarCollapsed(true);
 
     try {
-      if (files.question?.file && files.answer?.file) {
-        const uploadRes = await uploadFiles(files.question.file, files.answer.file);
+      if (files.question?.file) {
+        const uploadRes = await uploadFiles(files.question.file, files.answer?.file || null);
         if (uploadRes?.session_id) {
           await processSession(uploadRes.session_id);
           const fullData = await getSessionData(uploadRes.session_id);
           if (fullData?.questions?.length) {
             const mappedQs = fullData.questions.map((q, idx) => {
-              const grade = fullData.grading?.[q.id] || { score: q.max_score, total: q.max_score, feedback: 'Graded successfully.' };
+              const grade = fullData.grading?.[q.id] || {
+                score: q.max_score,
+                total: q.max_score,
+                feedback: 'Extracted from question paper.'
+              };
               return {
                 n: idx + 1,
                 id: q.id,
@@ -42,12 +46,12 @@ export default function App() {
             });
             setQuestions(mappedQs);
             setSessionData(fullData);
-            setSelectedQuestionId(mappedQs[0]?.n || 1);
+            setSelectedQuestionId(1);
           }
         }
       }
     } catch (err) {
-      console.warn('Backend unavailable, rendering demo data:', err);
+      console.warn('Backend extraction error or offline, fallback used:', err);
     } finally {
       setCurrentScreen('results');
     }
