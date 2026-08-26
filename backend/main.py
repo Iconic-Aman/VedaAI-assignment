@@ -1,19 +1,23 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from routers.upload import router as upload_router
 from routers.process import router as process_router
 from routers.session import router as session_router
+from services.auth import verify_bearer_token
 
 load_dotenv()
 
-# Reason: Initialize FastAPI application instance
+# Reason: Initialize FastAPI with docs mounted at /api/docs and /api/openapi.json
 app = FastAPI(
     title="VedaAI Assessment Extraction & Answer Mapping API",
     version="1.0.0",
-    description="Backend API for question paper extraction, handwritten answer mapping, and AI grading."
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
+    description="Backend API for question paper extraction, handwritten answer mapping, and AI grading with Bearer Auth."
 )
 
 # Reason: CORS middleware configuration with origins from environment variable
@@ -28,12 +32,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Reason: Register API routers
-app.include_router(upload_router)
-app.include_router(process_router)
-app.include_router(session_router)
+# Reason: Register API routers protected by Bearer authentication
+app.include_router(upload_router, dependencies=[Depends(verify_bearer_token)])
+app.include_router(process_router, dependencies=[Depends(verify_bearer_token)])
+app.include_router(session_router, dependencies=[Depends(verify_bearer_token)])
 
-# Reason: Healthcheck route
+# Reason: Public healthcheck route
 @app.get("/health")
 def health_check():
     return {"status": "ok", "service": "VedaAI Assessment Mapper"}
@@ -41,7 +45,7 @@ def health_check():
 # Reason: Root API endpoint
 @app.get("/")
 def root():
-    return {"message": "VedaAI Assessment Extraction & Answer Mapping API is running."}
+    return {"message": "VedaAI Assessment Extraction & Answer Mapping API is running. Docs at /api/docs"}
 
 if __name__ == "__main__":
     import uvicorn
