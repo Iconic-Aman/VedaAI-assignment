@@ -50,7 +50,7 @@
   .mobile-only { display: flex !important; }
   .desktop-only { display: none !important; }
   .main-content { border-radius: 0; }
-  .sidebar { display: none !important; }
+  .sidebar:not(.mobile-open) { display: none !important; }
   .sidebar-backdrop {
     position: fixed !important; inset: 0 !important;
     background: rgba(0, 0, 0, 0.45) !important; backdrop-filter: blur(2px) !important; z-index: 9998 !important;
@@ -58,10 +58,10 @@
   .sidebar.mobile-open {
     display: flex !important; position: fixed !important; top: 0 !important; right: 0 !important;
     bottom: 0 !important; left: auto !important; width: 292px !important; max-width: 85vw !important;
-    z-index: 9999 !important; border-radius: 0 !important; box-shadow: -4px 0 25px rgba(0, 0, 0, 0.3) !important;
-    animation: slideInRight 0.25s ease-out !important;
+    height: 100vh !important; z-index: 9999 !important; border-radius: 0 !important;
+    box-shadow: -4px 0 25px rgba(0, 0, 0, 0.3) !important; animation: slideInRight 0.25s ease-out !important;
   }
-  .sidebar.mobile-open .sidebar-full { display: flex !important; }
+  .sidebar.mobile-open .sidebar-full { display: flex !important; height: 100% !important; }
   .sidebar.mobile-open .sidebar-rail { display: none !important; }
 }
 

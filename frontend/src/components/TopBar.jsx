@@ -2,7 +2,7 @@ import React from 'react';
 import { IconExams } from './Icons';
 import teacherImg from '../assets/teacher.png';
 
-// Reason: TopBar with right-side 3-lines menu button to toggle sidebar
+// Reason: TopBar with mobile-only 3-lines button
 export const TopBar = ({ onBack, canGoBack, onToggleSidebar }) => {
   return (
     <header className="topbar">
@@ -67,10 +67,10 @@ export const TopBar = ({ onBack, canGoBack, onToggleSidebar }) => {
           </svg>
         </button>
 
-        {/* 3-Lines Menu Toggle Button */}
+        {/* 3-Lines Menu Toggle Button (Mobile Only) */}
         <button
           type="button"
-          className="icon-btn"
+          className="icon-btn mobile-only"
           onClick={onToggleSidebar}
           aria-label="Toggle sidebar menu"
           title="Toggle sidebar"
