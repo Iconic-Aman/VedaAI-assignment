@@ -7,7 +7,7 @@ import { QuestionList } from './components/QuestionList';
 import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
 
-// Reason: Root App component orchestrating screens and state
+// Reason: Root App component orchestrating screens and state matching Pixel Perfect UI
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -33,15 +33,16 @@ export default function App() {
       <Sidebar
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
+        active="Exams"
       />
 
-      <div className="main">
+      <main className="main-panel">
         <TopBar
           onBack={handleBack}
           canGoBack={currentScreen !== 'upload'}
         />
 
-        <section className="content">
+        <div className="main-content">
           {currentScreen === 'upload' && (
             <UploadScreen
               files={files}
@@ -64,8 +65,8 @@ export default function App() {
               />
             </div>
           )}
-        </section>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

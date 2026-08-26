@@ -1,26 +1,29 @@
 .sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 286px;
+  min-width: 286px;
   background: var(--sidebar-bg);
-  border-right: 1px solid var(--border);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-panel);
   display: flex;
   flex-direction: column;
+  padding: 20px;
   transition: width 0.28s ease, min-width 0.28s ease;
   position: relative;
   z-index: 10;
+  height: 100%;
 }
 
 .sidebar.collapsed {
-  width: 64px;
-  min-width: 64px;
+  width: 72px;
+  min-width: 72px;
+  padding: 16px 10px;
 }
 
 .sidebar-full {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 18px 16px;
-  width: 240px;
+  width: 100%;
 }
 
 .sidebar.collapsed .sidebar-full {
@@ -32,9 +35,8 @@
   flex-direction: column;
   align-items: center;
   height: 100%;
-  width: 64px;
-  padding: 16px 0;
-  gap: 14px;
+  width: 100%;
+  gap: 12px;
 }
 
 .sidebar.collapsed .sidebar-rail {
@@ -45,90 +47,101 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  padding: 0 4px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
 }
 
 .brand-mark,
 .rail-brand .brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: var(--black);
-  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--primary);
+  color: var(--primary-foreground);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 16px;
   flex: none;
 }
 
+.brand-mark svg,
+.rail-brand .brand-mark svg {
+  width: 20px;
+  height: 20px;
+}
+
 .brand-name {
+  font-family: var(--font-display);
   font-weight: 800;
-  font-size: 17px;
+  font-size: 26px;
   letter-spacing: -0.02em;
-  color: #17171a;
+  color: var(--foreground);
 }
 
 .toolkit-btn {
+  margin-top: 28px;
+  height: 52px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #2b2b2f;
-  color: #ffffff;
-  border: 1.5px solid #ff6a3d;
-  border-radius: 30px;
-  padding: 10px 16px;
-  font-size: 13px;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 15px;
   font-weight: 600;
+  border: none;
   cursor: pointer;
-  margin-bottom: 24px;
-  box-shadow: 0 0 0 2px rgba(255, 106, 61, 0.15);
+  box-shadow: 0 0 0 2px var(--brand), 0 0 0 6px var(--sidebar-bg);
   transition: transform 0.15s ease;
 }
 
-.toolkit-btn .spark,
-.rail-toolkit .spark {
-  width: 15px;
-  height: 15px;
-  color: #ffffff;
+.toolkit-btn:hover {
+  transform: scale(1.01);
+}
+
+.toolkit-btn .spark {
+  width: 16px;
+  height: 16px;
 }
 
 .rail-toolkit {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: #2b2b2f;
-  border: 1.5px solid #ff6a3d;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  box-shadow: 0 0 0 2px var(--brand);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-top: 12px;
 }
 
 .nav {
+  margin-top: 32px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  flex: 1;
+  gap: 4px;
 }
 
 .nav-item {
   display: flex;
+  height: 44px;
   align-items: center;
   gap: 12px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #55585f;
+  border-radius: 12px;
+  padding: 0 12px;
+  font-size: 15px;
+  color: var(--muted-foreground);
   text-decoration: none;
   cursor: pointer;
   border: none;
@@ -136,78 +149,74 @@
   width: 100%;
   text-align: left;
   transition: background 0.15s, color 0.15s;
+  font-family: inherit;
 }
 
 .nav-item:hover {
-  background: #f4f5f7;
-  color: var(--text);
+  background: rgba(240, 241, 244, 0.6);
+  color: var(--foreground);
 }
 
 .nav-item.active {
-  background: #f0f0f4;
-  color: #17171a;
-  font-weight: 700;
+  background: var(--sidebar-accent);
+  font-weight: 600;
+  color: var(--foreground);
 }
 
 .sidebar-bottom {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-top: auto;
+  gap: 16px;
+  padding-top: 32px;
 }
 
 .school-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
+  gap: 12px;
+  border-radius: 16px;
+  background: var(--secondary);
+  padding: 14px 16px;
 }
 
-.school-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #fff;
-  border: 1px solid #e2e5e9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.school-crest-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
   flex: none;
 }
 
-.school-emblem-svg {
-  width: 24px;
-  height: 24px;
+.school-meta {
+  line-height: 1.2;
 }
 
 .school-name {
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 700;
-  color: #17171a;
+  color: var(--foreground);
 }
 
 .school-loc {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
 }
 
 .rail-item {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   border: none;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #55585f;
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 
 .rail-item.active {
-  background: #f0f0f4;
-  color: #17171a;
+  background: var(--sidebar-accent);
+  color: var(--foreground);
 }
