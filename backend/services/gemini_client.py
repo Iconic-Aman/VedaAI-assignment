@@ -1,7 +1,12 @@
 import os
+import warnings
+from dotenv import load_dotenv
+
+# Suppress google.generativeai deprecation noise
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 import google.generativeai as genai
 from typing import Optional
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -14,7 +19,8 @@ def init_gemini() -> bool:
     return True
 
 # Reason: Get Gemini GenerativeModel configured for JSON or text responses
-def get_model(model_name: str = "gemini-2.0-flash", json_mode: bool = True):
+GEMINI_MODEL = os.getenv("GEMINI_MODEL")
+def get_model(model_name: str = GEMINI_MODEL, json_mode: bool = True):
     init_gemini()
     generation_config = {
         "temperature": 0.1,

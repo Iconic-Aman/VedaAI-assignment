@@ -1,16 +1,16 @@
 import io
-import fitz  # PyMuPDF
+import pymupdf
 from PIL import Image
-from typing import List, Tuple
+from typing import List
 
 DEFAULT_DPI = 150
 
-# Reason: Rasterize PDF bytes into fixed-DPI PIL Images for stable bbox coordinates
+# Reason: Rasterize PDF bytes into fixed-DPI PIL Images using pymupdf
 def pdf_to_page_images(pdf_bytes: bytes, dpi: int = DEFAULT_DPI) -> List[Image.Image]:
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
     images = []
     zoom = dpi / 72.0
-    matrix = fitz.Matrix(zoom, zoom)
+    matrix = pymupdf.Matrix(zoom, zoom)
     for page_idx in range(len(doc)):
         page = doc.load_page(page_idx)
         pix = page.get_pixmap(matrix=matrix, alpha=False)
