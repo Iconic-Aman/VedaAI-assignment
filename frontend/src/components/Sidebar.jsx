@@ -10,7 +10,7 @@ import {
 import schoolCrest from '../assets/school-crest.png';
 import brandIcon from '../assets/icon.png';
 
-// Reason: Flipped / reversed SVG sparkle icon requested by user
+// Reason: Flipped SVG sparkle icon for toolkit
 const ToolkitSparkleIcon = ({ className = 'spark-pair' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} style={{ transform: 'scaleX(-1)' }}>
     <path d="M0 0h24v24H0z" fill="none" />
@@ -29,11 +29,11 @@ const NAV_ITEMS = [
   { label: 'My Library', icon: IconLibrary },
 ];
 
-// Reason: Sidebar matching exact toolkit button and nav icons
+// Reason: Right-side Sidebar component expanding and collapsing smoothly
 export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-      {/* Expanded Sidebar */}
+      {/* Expanded Full Sidebar */}
       <div className="sidebar-full">
         <div className="sidebar-top">
           <div className="brand">
@@ -49,8 +49,8 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
             aria-label="Collapse sidebar"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: 20, height: 20 }}>
-              <rect x="3" y="4" width="18" height="16" rx="3" />
-              <line x1="9" y1="4" x2="9" y2="20" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -96,7 +96,7 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
         </div>
       </div>
 
-      {/* Collapsed Rail */}
+      {/* Collapsed Rail on Right */}
       <div className="sidebar-rail">
         <div className="rail-brand">
           <div className="brand-mark">
@@ -127,8 +127,8 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
             title="Expand sidebar"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 18, height: 18 }}>
-              <polyline points="7 17 12 12 7 7" />
-              <polyline points="13 17 18 12 13 7" />
+              <polyline points="17 17 12 12 17 7" />
+              <polyline points="11 17 6 12 11 7" />
             </svg>
           </button>
         </div>

@@ -8,10 +8,12 @@ import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
 import { uploadFiles, processSession, getSessionData } from './services/api';
 
-// Reason: Root App component matching Pixel Perfect UI workflow and timed transitions
+// Reason: Root App with standard desktop sidebar and hidden-by-default mobile right drawer
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('questions'); // 'questions' | 'answer'
   const [files, setFiles] = useState({ question: null, answer: null });
   const [questions, setQuestions] = useState(DUMMY_QUESTIONS);
   const [selectedQuestionId, setSelectedQuestionId] = useState(2);
@@ -22,6 +24,7 @@ export default function App() {
     const aFile = files.answer?.file || null;
 
     setSidebarCollapsed(true);
+    setMobileMenuOpen(false);
     setCurrentScreen('extracting');
 
     const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
@@ -78,6 +81,8 @@ export default function App() {
       <Sidebar
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
+        mobileOpen={mobileMenuOpen}
+        onCloseMobile={() => setMobileMenuOpen(false)}
         active="Exams"
       />
 
@@ -85,6 +90,7 @@ export default function App() {
         <TopBar
           onBack={handleBack}
           canGoBack={currentScreen !== 'upload'}
+          onToggleSidebar={() => setMobileMenuOpen((prev) => !prev)}
         />
 
         <div className="main-content">
@@ -100,16 +106,42 @@ export default function App() {
           {currentScreen === 'extracting' && <ExtractingScreen />}
 
           {currentScreen === 'results' && (
-            <div className="screen screen-results">
-              <QuestionList
-                questions={questions}
-                selectedId={selectedQuestionId}
-                onSelectQuestion={(id) => setSelectedQuestionId(id)}
-              />
-              <AnswerSheetViewer
-                selectedQuestionId={selectedQuestionId}
-                sessionData={sessionData}
-              />
+            <div className="review-main-wrapper">
+              {/* Mobile Tab Switcher */}
+              <div className="mobile-tab-bar">
+                <div className="mobile-tab-pill-grid">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('questions')}
+                    className={`mobile-tab-btn ${activeTab === 'questions' ? 'active-tab' : ''}`}
+                  >
+                    Questions
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('answer')}
+                    className={`mobile-tab-btn ${activeTab === 'answer' ? 'active-tab' : ''}`}
+                  >
+                    Answer Sheet
+                  </button>
+                </div>
+              </div>
+
+              <div className="screen-results">
+                <div className={`tab-pane-wrap ${activeTab === 'questions' ? 'mobile-visible' : 'mobile-hidden'}`}>
+                  <QuestionList
+                    questions={questions}
+                    selectedId={selectedQuestionId}
+                    onSelectQuestion={(id) => setSelectedQuestionId(id)}
+                  />
+                </div>
+                <div className={`tab-pane-wrap ${activeTab === 'answer' ? 'mobile-visible' : 'mobile-hidden'}`}>
+                  <AnswerSheetViewer
+                    selectedQuestionId={selectedQuestionId}
+                    sessionData={sessionData}
+                  />
+                </div>
+              </div>
             </div>
           )}
         </div>
