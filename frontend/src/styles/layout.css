@@ -33,7 +33,7 @@
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .breadcrumb {
@@ -56,7 +56,6 @@
   cursor: pointer;
   color: var(--muted-foreground);
   padding: 0;
-  position: relative;
   transition: color 0.15s ease, background 0.15s ease;
 }
 
@@ -65,14 +64,45 @@
   background: var(--secondary);
 }
 
-.icon-btn.has-dot .dot {
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 8px;
-  height: 8px;
+.top-action-btn {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--brand);
+  background: #f4f5f7;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #1e1e24;
+  position: relative;
+  transition: background 0.15s ease;
+  padding: 0;
+}
+
+.top-action-btn:hover {
+  background: #e8eaed;
+}
+
+.top-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.top-icon-sparkle {
+  width: 18px;
+  height: 18px;
+  color: #1e1e24;
+}
+
+.top-orange-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #f95721;
 }
 
 .user-btn {

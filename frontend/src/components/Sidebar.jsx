@@ -5,11 +5,21 @@ import {
   IconAssignments,
   IconExams,
   IconLibrary,
-  IconSettings,
-  IconSpark
+  IconSettings
 } from './Icons';
 import schoolCrest from '../assets/school-crest.png';
 import brandIcon from '../assets/icon.png';
+
+// Reason: Flipped / reversed SVG sparkle icon requested by user
+const ToolkitSparkleIcon = ({ className = 'spark-pair' }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} style={{ transform: 'scaleX(-1)' }}>
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path
+      fill="currentColor"
+      d="M7.195 2.845a.75.75 0 0 0-1.467 0c-.232 1.096-.55 1.835-.99 2.361c-.429.516-1.029.893-1.95 1.166a.75.75 0 0 0 0 1.438c.885.262 1.48.617 1.916 1.125c.444.516.782 1.26 1.024 2.402a.75.75 0 0 0 1.467 0c.242-1.143.58-1.886 1.024-2.402c.436-.508 1.03-.863 1.917-1.125a.75.75 0 0 0 0-1.438c-.886-.262-1.481-.617-1.917-1.125c-.444-.516-.782-1.26-1.024-2.402m8.303 3.251a.75.75 0 0 0-1.458 0c-.554 2.292-1.141 3.674-1.972 4.638c-.82.952-1.947 1.576-3.77 2.192a.75.75 0 0 0 0 1.421c1.904.643 3.046 1.322 3.852 2.292c.819.986 1.362 2.355 1.89 4.537a.75.75 0 0 0 1.458 0c.554-2.291 1.142-3.673 1.972-4.637c.82-.952 1.947-1.576 3.77-2.192a.75.75 0 0 0 0-1.421c-1.907-.644-3.047-1.32-3.852-2.29c-.818-.984-1.36-2.352-1.89-4.54"
+    />
+  </svg>
+);
 
 const NAV_ITEMS = [
   { label: 'Home', icon: IconHome },
@@ -19,7 +29,7 @@ const NAV_ITEMS = [
   { label: 'My Library', icon: IconLibrary },
 ];
 
-// Reason: Sidebar matching Pixel Perfect UI layout and using provided icon.png
+// Reason: Sidebar matching exact toolkit button and nav icons
 export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -46,7 +56,7 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
         </div>
 
         <button type="button" className="toolkit-btn">
-          <IconSpark className="spark" />
+          <ToolkitSparkleIcon className="spark-pair" />
           AI Teacher's Toolkit
         </button>
 
@@ -94,7 +104,7 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
           </div>
         </div>
         <button type="button" className="rail-toolkit" title="AI Teacher's Toolkit">
-          <IconSpark className="spark" />
+          <ToolkitSparkleIcon className="spark-pair" />
         </button>
         <div className="nav" style={{ marginTop: 12 }}>
           {NAV_ITEMS.map(({ label, icon: Icon }) => (

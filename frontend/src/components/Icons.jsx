@@ -1,43 +1,44 @@
 import React from 'react';
 
-// Reason: Centralized SVG icons matching Figma screenshot
+// Reason: Sidebar icons precisely matching screenshot
 export const IconHome = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ic">
-    <rect x="3" y="3" width="7" height="7" rx="1.5" />
-    <rect x="14" y="3" width="7" height="7" rx="1.5" />
-    <rect x="3" y="14" width="7" height="7" rx="1.5" />
-    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ic">
+    <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
   </svg>
 );
 
 export const IconClassroom = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ic">
-    <path d="M2 3h20" />
-    <path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" />
-    <path d="m7 21 5-5 5 5" />
+  <svg viewBox="0 0 24 24" className="ic" fill="none">
+    <rect x="2" y="3.5" width="20" height="15" rx="3.5" fill="currentColor" />
+    <circle cx="12" cy="9" r="2.2" fill="var(--sidebar-bg, #ffffff)" />
+    <path d="M7 16c0-2.4 2-4.2 4.5-4.2s4.5 1.8 4.5 4.2" stroke="var(--sidebar-bg, #ffffff)" strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M14.5 9.5l3.2-2.5" stroke="var(--sidebar-bg, #ffffff)" strokeWidth="1.8" strokeLinecap="round" />
   </svg>
 );
 
 export const IconAssignments = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ic">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ic">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
     <line x1="8" y1="13" x2="16" y2="13" />
-    <line x1="8" y1="17" x2="14" y2="17" />
+    <line x1="8" y1="17" x2="13" y2="17" />
   </svg>
 );
 
 export const IconExams = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ic">
-    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-    <rect x="8" y="2" width="8" height="4" rx="1" />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ic">
+    <rect x="5" y="4.5" width="14" height="16.5" rx="3" />
+    <path d="M9 4.5V3.5a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 1.5 1.5v1" />
   </svg>
 );
 
 export const IconLibrary = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ic">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ic">
     <circle cx="12" cy="12" r="9" />
-    <polyline points="12 7 12 12 15 15" />
+    <polyline points="12 6.5 12 12 16.5 12" />
   </svg>
 );
 
@@ -49,7 +50,7 @@ export const IconSettings = () => (
 );
 
 export const IconDoc = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ic">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ic">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
   </svg>
