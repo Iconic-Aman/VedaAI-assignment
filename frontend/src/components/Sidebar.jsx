@@ -10,7 +10,7 @@ import {
 import schoolCrest from '../assets/school-crest.png';
 import brandIcon from '../assets/icon.png';
 
-// Reason: Flipped / reversed SVG sparkle icon requested by user
+// Reason: Flipped SVG sparkle icon for toolkit
 const ToolkitSparkleIcon = ({ className = 'spark-pair' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} style={{ transform: 'scaleX(-1)' }}>
     <path d="M0 0h24v24H0z" fill="none" />
@@ -29,110 +29,124 @@ const NAV_ITEMS = [
   { label: 'My Library', icon: IconLibrary },
 ];
 
-// Reason: Sidebar matching exact toolkit button and nav icons
-export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
+// Reason: Sidebar supporting mobile right drawer and collapse states
+export const Sidebar = ({ collapsed, setCollapsed, mobileOpen, onCloseMobile, active = 'Exams' }) => {
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-      {/* Expanded Sidebar */}
-      <div className="sidebar-full">
-        <div className="sidebar-top">
-          <div className="brand">
+    <>
+      {mobileOpen && (
+        <div
+          className="sidebar-backdrop"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside className={`sidebar ${collapsed && !mobileOpen ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+        {/* Expanded Full Sidebar */}
+        <div className="sidebar-full">
+          <div className="sidebar-top">
+            <div className="brand">
+              <div className="brand-mark">
+                <img src={brandIcon} alt="VedaAI icon" className="brand-mark-img" />
+              </div>
+              <span className="brand-name">VedaAI</span>
+            </div>
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => {
+                if (mobileOpen) onCloseMobile?.();
+                else setCollapsed(true);
+              }}
+              aria-label="Close sidebar"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: 20, height: 20 }}>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <button type="button" className="toolkit-btn">
+            <ToolkitSparkleIcon className="spark-pair" />
+            AI Teacher's Toolkit
+          </button>
+
+          <nav className="nav">
+            {NAV_ITEMS.map(({ label, icon: Icon }) => {
+              const isActive = label === active;
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  className={`nav-item ${isActive ? 'active' : ''}`}
+                  onClick={onCloseMobile}
+                >
+                  <Icon />
+                  {label}
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="sidebar-bottom">
+            <button type="button" className="nav-item">
+              <IconSettings />
+              Settings
+            </button>
+
+            <div className="school-card">
+              <img
+                src={schoolCrest}
+                alt="Delhi Public School crest"
+                className="school-crest-img"
+              />
+              <div className="school-meta">
+                <div className="school-name">Delhi Public School</div>
+                <div className="school-loc">Bokaro Steel City</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Collapsed Rail on Desktop */}
+        <div className="sidebar-rail">
+          <div className="rail-brand">
             <div className="brand-mark">
               <img src={brandIcon} alt="VedaAI icon" className="brand-mark-img" />
             </div>
-            <span className="brand-name">VedaAI</span>
           </div>
-          <button
-            type="button"
-            className="icon-btn"
-            onClick={() => setCollapsed(true)}
-            aria-label="Collapse sidebar"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: 20, height: 20 }}>
-              <rect x="3" y="4" width="18" height="16" rx="3" />
-              <line x1="9" y1="4" x2="9" y2="20" />
-            </svg>
+          <button type="button" className="rail-toolkit" title="AI Teacher's Toolkit">
+            <ToolkitSparkleIcon className="spark-pair" />
           </button>
-        </div>
-
-        <button type="button" className="toolkit-btn">
-          <ToolkitSparkleIcon className="spark-pair" />
-          AI Teacher's Toolkit
-        </button>
-
-        <nav className="nav">
-          {NAV_ITEMS.map(({ label, icon: Icon }) => {
-            const isActive = label === active;
-            return (
+          <div className="nav" style={{ marginTop: 12 }}>
+            {NAV_ITEMS.map(({ label, icon: Icon }) => (
               <button
                 key={label}
                 type="button"
-                className={`nav-item ${isActive ? 'active' : ''}`}
+                className={`rail-item ${label === active ? 'active' : ''}`}
+                title={label}
               >
                 <Icon />
-                {label}
               </button>
-            );
-          })}
-        </nav>
-
-        <div className="sidebar-bottom">
-          <button type="button" className="nav-item">
-            <IconSettings />
-            Settings
-          </button>
-
-          <div className="school-card">
-            <img
-              src={schoolCrest}
-              alt="Delhi Public School crest"
-              className="school-crest-img"
-            />
-            <div className="school-meta">
-              <div className="school-name">Delhi Public School</div>
-              <div className="school-loc">Bokaro Steel City</div>
-            </div>
+            ))}
           </div>
-        </div>
-      </div>
-
-      {/* Collapsed Rail */}
-      <div className="sidebar-rail">
-        <div className="rail-brand">
-          <div className="brand-mark">
-            <img src={brandIcon} alt="VedaAI icon" className="brand-mark-img" />
-          </div>
-        </div>
-        <button type="button" className="rail-toolkit" title="AI Teacher's Toolkit">
-          <ToolkitSparkleIcon className="spark-pair" />
-        </button>
-        <div className="nav" style={{ marginTop: 12 }}>
-          {NAV_ITEMS.map(({ label, icon: Icon }) => (
+          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+            <img src={schoolCrest} alt="DPS" style={{ width: 32, height: 32 }} />
             <button
-              key={label}
               type="button"
-              className={`rail-item ${label === active ? 'active' : ''}`}
-              title={label}
+              className="icon-btn"
+              onClick={() => setCollapsed(false)}
+              title="Expand sidebar"
             >
-              <Icon />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 18, height: 18 }}>
+                <polyline points="7 17 12 12 7 7" />
+                <polyline points="13 17 18 12 13 7" />
+              </svg>
             </button>
-          ))}
+          </div>
         </div>
-        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-          <img src={schoolCrest} alt="DPS" style={{ width: 32, height: 32 }} />
-          <button
-            type="button"
-            className="icon-btn"
-            onClick={() => setCollapsed(false)}
-            title="Expand sidebar"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 18, height: 18 }}>
-              <polyline points="7 17 12 12 7 7" />
-              <polyline points="13 17 18 12 13 7" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };

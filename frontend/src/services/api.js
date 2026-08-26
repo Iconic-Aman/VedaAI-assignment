@@ -10,10 +10,14 @@ function getAuthHeaders(customHeaders = {}) {
   return headers;
 }
 
-export async function uploadFiles(questionFile, answerFile) {
+export async function uploadFiles(questionFile, answerFile = null) {
   const formData = new FormData();
-  formData.append('question_paper', questionFile);
-  formData.append('answer_sheet', answerFile);
+  if (questionFile) {
+    formData.append('question_paper', questionFile);
+  }
+  if (answerFile) {
+    formData.append('answer_sheet', answerFile);
+  }
 
   const res = await fetch(`${API_BASE_URL}/upload`, {
     method: 'POST',

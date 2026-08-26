@@ -1,16 +1,17 @@
 import uuid
 import base64
+from typing import Optional
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from store.memory_store import create_session, get_session_raw, update_session
 from services.pdf_service import process_upload_to_images, image_to_bytes
 
 router = APIRouter(prefix="", tags=["Upload"])
 
-# Reason: POST /upload route accepting question paper and student handwritten sheet
+# Reason: POST /upload route accepting question paper and optional answer sheet
 @router.post("/upload")
 async def upload_documents(
     question_paper: UploadFile = File(...),
-    answer_sheet: UploadFile = File(...)
+    answer_sheet: Optional[UploadFile] = File(None)
 ):
     session_id = str(uuid.uuid4())
     session = create_session(session_id)
@@ -18,15 +19,16 @@ async def upload_documents(
 
     try:
         q_bytes = await question_paper.read()
-        a_bytes = await answer_sheet.read()
-
         q_images = process_upload_to_images(q_bytes, question_paper.filename)
-        a_images = process_upload_to_images(a_bytes, answer_sheet.filename)
-
         raw_store["q_images"] = q_images
+
+        a_images = []
+        if answer_sheet and answer_sheet.filename:
+            a_bytes = await answer_sheet.read()
+            a_images = process_upload_to_images(a_bytes, answer_sheet.filename)
         raw_store["a_images"] = a_images
 
-        # Convert page images to base64 data URIs for direct frontend rendering
+        # Convert page images to base64 data URIs
         q_b64 = [
             f"data:image/png;base64,{base64.b64encode(image_to_bytes(img)).decode('utf-8')}"
             for img in q_images
