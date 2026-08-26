@@ -1,0 +1,92 @@
+.sidebar {
+  width: 292px;
+  min-width: 292px;
+  background: var(--sidebar-bg);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-panel);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: width 0.28s ease, min-width 0.28s ease;
+  position: relative;
+  z-index: 10;
+  height: 100%;
+}
+.sidebar.collapsed { width: 72px; min-width: 72px; padding: 16px 10px; }
+.sidebar-full { display: flex; flex-direction: column; height: 100%; width: 100%; }
+.sidebar.collapsed .sidebar-full { display: none; }
+.sidebar-rail { display: none; flex-direction: column; align-items: center; height: 100%; width: 100%; gap: 12px; }
+.sidebar.collapsed .sidebar-rail { display: flex; }
+
+.sidebar-top { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-mark, .rail-brand .brand-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex: none; overflow: hidden;
+}
+.brand-mark-img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.brand-name {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.05em;
+  line-height: 1em;
+  color: rgb(31, 31, 31);
+  margin: 0;
+}
+
+.toolkit-btn {
+  margin-top: 28px;
+  height: 52px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 9999px;
+  background: #2b2b2f;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  border: 3.5px solid #f9734e;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(249, 115, 78, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.toolkit-btn:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 14px rgba(249, 115, 78, 0.4);
+}
+.toolkit-btn .spark-pair { width: 18px; height: 18px; color: #ffffff; flex: none; }
+
+.rail-toolkit {
+  width: 44px; height: 44px; border-radius: 50%; background: #2b2b2f;
+  color: #ffffff; border: 3px solid #f9734e; display: flex;
+  align-items: center; justify-content: center; cursor: pointer; margin-top: 12px;
+}
+
+.nav { margin-top: 32px; display: flex; flex-direction: column; gap: 4px; }
+.nav-item {
+  display: flex; height: 44px; align-items: center; gap: 12px; border-radius: 12px;
+  padding: 0 12px; font-size: 15px; color: var(--muted-foreground); text-decoration: none;
+  cursor: pointer; border: none; background: transparent; width: 100%; text-align: left;
+  transition: background 0.15s, color 0.15s; font-family: inherit;
+}
+.nav-item:hover { background: rgba(240, 241, 244, 0.6); color: var(--foreground); }
+.nav-item.active { background: var(--sidebar-accent); font-weight: 600; color: var(--foreground); }
+
+.sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 16px; padding-top: 32px; }
+.school-card {
+  display: flex; align-items: center; gap: 12px; border-radius: 16px;
+  background: var(--secondary); padding: 14px 16px;
+}
+.school-crest-img { width: 40px; height: 40px; object-fit: contain; flex: none; }
+.school-meta { line-height: 1.2; }
+.school-name { font-size: 15px; font-weight: 700; color: var(--foreground); }
+.school-loc { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+
+.rail-item {
+  width: 44px; height: 44px; border-radius: 12px; border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center; color: var(--muted-foreground); cursor: pointer;
+}
+.rail-item.active { background: var(--sidebar-accent); color: var(--foreground); }
