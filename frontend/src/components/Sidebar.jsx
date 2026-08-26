@@ -9,6 +9,7 @@ import {
   IconSpark
 } from './Icons';
 import schoolCrest from '../assets/school-crest.png';
+import brandIcon from '../assets/icon.png';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: IconHome },
@@ -18,7 +19,7 @@ const NAV_ITEMS = [
   { label: 'My Library', icon: IconLibrary },
 ];
 
-// Reason: Sidebar matching Pixel Perfect UI layout and styling
+// Reason: Sidebar matching Pixel Perfect UI layout and using provided icon.png
 export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -27,9 +28,7 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
         <div className="sidebar-top">
           <div className="brand">
             <div className="brand-mark">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 5l8 15L20 5h-4l-4 8-4-8H4z" />
-              </svg>
+              <img src={brandIcon} alt="VedaAI icon" className="brand-mark-img" />
             </div>
             <span className="brand-name">VedaAI</span>
           </div>
@@ -91,9 +90,7 @@ export const Sidebar = ({ collapsed, setCollapsed, active = 'Exams' }) => {
       <div className="sidebar-rail">
         <div className="rail-brand">
           <div className="brand-mark">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M4 5l8 15L20 5h-4l-4 8-4-8H4z" />
-            </svg>
+            <img src={brandIcon} alt="VedaAI icon" className="brand-mark-img" />
           </div>
         </div>
         <button type="button" className="rail-toolkit" title="AI Teacher's Toolkit">
