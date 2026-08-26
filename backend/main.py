@@ -37,6 +37,14 @@ app.include_router(upload_router, dependencies=[Depends(verify_bearer_token)])
 app.include_router(process_router, dependencies=[Depends(verify_bearer_token)])
 app.include_router(session_router, dependencies=[Depends(verify_bearer_token)])
 
+# Reason: Dedicated endpoint to test Bearer token authentication
+@app.get("/api/test-auth", dependencies=[Depends(verify_bearer_token)], tags=["Auth"])
+def test_authentication():
+    return {
+        "status": "authenticated",
+        "message": "Bearer authentication successful"
+    }
+
 # Reason: Public healthcheck route
 @app.get("/health")
 def health_check():
