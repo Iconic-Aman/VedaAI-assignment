@@ -2,6 +2,7 @@ import re
 import json
 import uuid
 from typing import List
+from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 from models.schema import AnswerSegment, BBox
 from services.gemini_client import get_model
@@ -34,7 +35,7 @@ def clean_json_parse(text: str):
     return json.loads(clean)
 
 # Reason: Extract raw answer segments with Gemini vision
-def extract_answers_from_page(page_img: Image.Image, page_num: int, start_order: int) -> List[AnswerSegment]:
+def extract_answers_from_page(page_img: Image.Image, page_num: int) -> List[AnswerSegment]:
     for model_name in FALLBACK_MODELS:
         try:
             model = get_model(model_name=model_name, json_mode=True)
@@ -63,7 +64,7 @@ def extract_answers_from_page(page_img: Image.Image, page_num: int, start_order:
                     text=text,
                     page=page_num,
                     bbox=bbox,
-                    order=start_order + idx
+                    order=idx + 1
                 )
                 segments.append(seg)
             if segments:
@@ -73,13 +74,24 @@ def extract_answers_from_page(page_img: Image.Image, page_num: int, start_order:
 
     return []
 
-# Reason: Extract answer segments across all student answer pages
+# Reason: Extract answer segments across all student answer pages in parallel
 def extract_all_answers(pages: List[Image.Image]) -> List[AnswerSegment]:
+    if not pages:
+        return []
+
+    with ThreadPoolExecutor(max_workers=min(len(pages), 5)) as executor:
+        futures = [
+            executor.submit(extract_answers_from_page, page_img, idx + 1)
+            for idx, page_img in enumerate(pages)
+        ]
+        page_results = [f.result() for f in futures]
+
     all_segments = []
     order = 1
-    for page_idx, page_img in enumerate(pages):
-        page_num = page_idx + 1
-        page_segs = extract_answers_from_page(page_img, page_num=page_num, start_order=order)
-        all_segments.extend(page_segs)
-        order += len(page_segs)
+    for page_segs in page_results:
+        for seg in page_segs:
+            seg.order = order
+            order += 1
+            all_segments.append(seg)
+
     return all_segments

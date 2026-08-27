@@ -1,0 +1,80 @@
+[
+  {
+    "id": "575698b2-281b-4458-8cf5-947cdaf239aa",
+    "label": "4",
+    "text": "1925",
+    "page": 1,
+    "bbox": {
+      "x": 273.0,
+      "y": 204.0,
+      "w": 0.9,
+      "h": 0.2
+    },
+    "order": 1
+  },
+  {
+    "id": "d769e462-ded0-4fb8-8b58-0a822c6678b5",
+    "label": "5",
+    "text": "1857",
+    "page": 1,
+    "bbox": {
+      "x": 294.0,
+      "y": 247.0,
+      "w": 0.9,
+      "h": 0.2
+    },
+    "order": 2
+  },
+  {
+    "id": "9818e477-3d8a-4bad-af3f-4f85cd068ec1",
+    "label": "6",
+    "text": "The first Governor - General of India was Lord William Bentinck, and the last viceroy of India was Lord Mountbatten",
+    "page": 1,
+    "bbox": {
+      "x": 903.0,
+      "y": 341.0,
+      "w": 0.9,
+      "h": 0.2
+    },
+    "order": 3
+  },
+  {
+    "id": "e4e2eb46-2600-4e31-8635-65069e357dbb",
+    "label": "7",
+    "text": "They were known as \"Company Bahadur\"",
+    "page": 1,
+    "bbox": {
+      "x": 105.0,
+      "y": 399.0,
+      "w": 0.9,
+      "h": 0.2
+    },
+    "order": 4
+  },
+  {
+    "id": "ed084bd1-4272-443c-b466-1cb730fd32f2",
+    "label": "9",
+    "text": "The Santhals and Mundas saw themselves as \"the People of the forest\"",
+    "page": 1,
+    "bbox": {
+      "x": 115.0,
+      "y": 472.0,
+      "w": 0.9,
+      "h": 0.2
+    },
+    "order": 5
+  },
+  {
+    "id": "f21d456e-ee87-4931-8b6a-805e0506274b",
+    "label": "10",
+    "text": "Dargah : Shrine or tomb of a Muslim Saint\nKhanqahs : A place where Muslim Soldiers lived and trained for war\nIdgah : An open Prayer ground where Muslims offer Eid Prayers",
+    "page": 1,
+    "bbox": {
+      "x": 0.05,
+      "y": 645.0,
+      "w": 0.9,
+      "h": 0.2
+    },
+    "order": 6
+  }
+]
