@@ -41,6 +41,7 @@ def grade_all_answers(
         graded = False
         for model_name in FALLBACK_MODELS:
             try:
+                print(f"[GEMINI GRADING] Grading question {q.full_label} using model: {model_name}")
                 model = get_model(model_name=model_name, json_mode=True)
                 prompt = f"""Grade this student answer.
 Question ({q.max_score} marks): {q.text}
@@ -62,7 +63,7 @@ Return JSON:
                 graded = True
                 break
             except Exception as e:
-                print(f"[GRADING Q{q.full_label}] Model {model_name} note: {e}")
+                print(f"[GEMINI GRADING ERROR] Q{q.full_label} model {model_name} failed: {e}")
 
         if not graded:
             grading_results[q.id] = GradeFeedback(

@@ -1,0 +1,98 @@
+[
+  {
+    "label": "4",
+    "text": "1925",
+    "bbox": [
+      270,
+      322,
+      339,
+      352
+    ],
+    "norm_bbox": {
+      "x": 0.218,
+      "y": 0.184,
+      "w": 0.056,
+      "h": 0.017
+    }
+  },
+  {
+    "label": "5",
+    "text": "1857",
+    "bbox": [
+      282,
+      400,
+      365,
+      435
+    ],
+    "norm_bbox": {
+      "x": 0.228,
+      "y": 0.228,
+      "w": 0.067,
+      "h": 0.02
+    }
+  },
+  {
+    "label": "6",
+    "text": "The first Governer-General of India was Lord William Bentinck, and the last viceroy of India was Lord Mountbatten",
+    "bbox": [
+      240,
+      480,
+      1119,
+      598
+    ],
+    "norm_bbox": {
+      "x": 0.194,
+      "y": 0.274,
+      "w": 0.709,
+      "h": 0.067
+    }
+  },
+  {
+    "label": "7",
+    "text": "They were known as 'Company Bahadur'",
+    "bbox": [
+      261,
+      640,
+      996,
+      700
+    ],
+    "norm_bbox": {
+      "x": 0.211,
+      "y": 0.365,
+      "w": 0.593,
+      "h": 0.034
+    }
+  },
+  {
+    "label": "9",
+    "text": "The Santhals and Mundas saw themselves as 'the People of the forest'",
+    "bbox": [
+      236,
+      733,
+      1063,
+      826
+    ],
+    "norm_bbox": {
+      "x": 0.191,
+      "y": 0.418,
+      "w": 0.667,
+      "h": 0.053
+    }
+  },
+  {
+    "label": "10",
+    "text": "Dargah: Shrine or tomb of a Muslim Saint\nKhanqahs: A place where Muslim Soldiers lived and trained for war\nIdgah: An open prayer ground where Muslims offer Ed Prayers",
+    "bbox": [
+      231,
+      866,
+      1147,
+      1130
+    ],
+    "norm_bbox": {
+      "x": 0.187,
+      "y": 0.494,
+      "w": 0.738,
+      "h": 0.15
+    }
+  }
+]

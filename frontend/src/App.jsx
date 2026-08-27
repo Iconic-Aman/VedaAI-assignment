@@ -8,7 +8,7 @@ import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
 import { uploadFiles, processSession, getSessionData } from './services/api';
 
-// Reason: Root App supporting Surya OCR answer extraction and question mapping pipeline
+// Reason: Root App with comprehensive error logging and state management
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -23,7 +23,10 @@ export default function App() {
     const qFile = directFile || files.question?.file;
     const aFile = files.answer?.file || null;
 
-    if (!qFile && !aFile) return;
+    if (!qFile && !aFile) {
+      console.warn('[App] No files selected for mapping!');
+      return;
+    }
 
     setSidebarCollapsed(true);
     setMobileMenuOpen(false);
@@ -32,17 +35,17 @@ export default function App() {
     const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
 
     try {
-      console.log('[Frontend] Starting upload & processing...');
+      console.log('[App] Starting upload & processing pipeline...');
       const [uploadRes] = await Promise.all([
         uploadFiles(qFile, aFile),
         minDelay
       ]);
 
       if (uploadRes?.session_id) {
-        console.log('[Frontend] Session created:', uploadRes.session_id);
+        console.log(`[App] Session created: ${uploadRes.session_id}`);
         await processSession(uploadRes.session_id);
         const fullData = await getSessionData(uploadRes.session_id);
-        console.log('[Frontend] Extracted full session data:', fullData);
+        console.log('[App] Session data received:', fullData);
 
         if (fullData?.questions && fullData.questions.length > 0) {
           const mappedQs = fullData.questions.map((q, idx) => {
@@ -69,7 +72,7 @@ export default function App() {
         setSessionData(fullData);
       }
     } catch (err) {
-      console.error('[Frontend] Backend extraction failed:', err);
+      console.error('[App] Pipeline fatal error:', err);
     } finally {
       setCurrentScreen('results');
     }

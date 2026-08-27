@@ -33,10 +33,11 @@ def clean_json_parse(text: str):
     clean = re.sub(r'```(?:json)?', '', text).strip()
     return json.loads(clean)
 
-# Reason: Extract questions from a single page image via Gemini vision with automatic fallback
+# Reason: Extract questions with explicit Gemini model logging
 def extract_questions_from_page(page_img: Image.Image, page_num: int) -> List[Question]:
     for model_name in FALLBACK_MODELS:
         try:
+            print(f"[GEMINI VISION] Extracting questions on page {page_num} using model: {model_name}")
             model = get_model(model_name=model_name, json_mode=True)
             response = model.generate_content([QUESTION_PROMPT, page_img])
             raw_data = clean_json_parse(response.text)
@@ -67,9 +68,10 @@ def extract_questions_from_page(page_img: Image.Image, page_num: int) -> List[Qu
                 questions.append(q)
 
             if questions:
+                print(f"[GEMINI VISION SUCCESS] Model {model_name} extracted {len(questions)} questions on page {page_num}.")
                 return questions
         except Exception as e:
-            print(f"[PAGE {page_num}] Model {model_name} failed: {e}")
+            print(f"[GEMINI VISION ERROR] Page {page_num} model {model_name} failed: {e}")
 
     return []
 
