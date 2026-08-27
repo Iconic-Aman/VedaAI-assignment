@@ -7,13 +7,16 @@
 
 ---
 
-## 📸 Application Screenshots
+## 📸 Application Screenshots & Demo
 
 ### 1. Document Upload Screen
-![VedaAI Upload Interface](docs/images/upload_screen.png)
+![VedaAI Upload Interface](./images/upload_screen.png)
 
 ### 2. Live Graded Answer Sheet with 2D Spatial Grounding & Score Stamps
-![Graded Answer Sheet](docs/images/results_evaluation.png)
+![Graded Answer Sheet](./images/results_evaluation.png)
+
+### 3. Complete Evaluated Results Overview
+![VedaAI Demo Page](./images/demo_page.png)
 
 ---
 
@@ -75,8 +78,13 @@ API_BEARER_TOKEN=aman-secret
 
 ---
 
-## ⚠️ Known Limitations & Notes
+## 📌 Assumptions & Limitations
 
-1. **Page Limit**: Optimized for **1 to 2 pages** per upload session for fast parallel processing and rate-limit preservation.
-2. **Slot Specificity**: Files must be uploaded to their designated slots (Question Paper in Question slot, Answer Sheet in Answer slot). Swapping them will prevent accurate question-to-answer evaluation.
-3. **Legibility**: Extremely faint, skewed, or low-contrast handwritten images may experience lower spatial bounding box accuracy.
+- **Session In-Memory Scope**: No authentication or persistent database — data is handled in-memory for the session, per assignment scope.
+- **Bounding Box Approximation**: Answer-region highlighting is based on approximate bounding boxes returned by the model; may be slightly imprecise for very dense or overlapping handwriting.
+- **Handwriting Quality**: Grading and AI feedback are generated per question; accuracy depends on handwriting legibility and answer sheet image quality.
+- **Single-Student Workflow**: Currently tested with single-student answer sheets; batch/multi-student upload is not yet supported.
+- **Document Page Limits**: Optimized for 1 to 2 pages per upload session for fast parallel processing and rate-limit preservation. Multi-page answers are supported, but very long documents (20+ pages) may require additional chunking for reliable extraction within free-tier rate limits.
+- **Slot Specificity**: Files must be uploaded to their designated slots (Question Paper in Question slot, Answer Sheet in Answer slot). Swapping them will prevent accurate question-to-answer evaluation.
+- **Error Recovery**: No retry/error-recovery UI for failed extraction — a failed page currently requires re-upload.
+- **Free-Tier Infrastructure**: Deployed on free-tier infrastructure (Vercel + Gemini free tier), so response times and rate limits may vary under heavy use.
