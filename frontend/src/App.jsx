@@ -8,7 +8,7 @@ import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
 import { uploadFiles, processSession, getSessionData } from './services/api';
 
-// Reason: Root App supporting question paper and answer sheet extraction pipeline
+// Reason: Root App supporting Surya OCR answer extraction and question mapping pipeline
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -110,7 +110,6 @@ export default function App() {
 
           {currentScreen === 'results' && (
             <div className="review-main-wrapper">
-              {/* Mobile Tab Switcher */}
               <div className="mobile-tab-bar">
                 <div className="mobile-tab-pill-grid">
                   <button
@@ -141,6 +140,7 @@ export default function App() {
                 <div className={`tab-pane-wrap ${activeTab === 'answer' ? 'mobile-visible' : 'mobile-hidden'}`}>
                   <AnswerSheetViewer
                     selectedQuestionId={selectedQuestionId}
+                    onSelectQuestion={(id) => setSelectedQuestionId(id)}
                     sessionData={sessionData}
                   />
                 </div>

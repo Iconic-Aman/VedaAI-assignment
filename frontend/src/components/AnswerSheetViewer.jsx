@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-// Reason: AnswerSheetViewer rendering real uploaded page images, bounding boxes, and mapping highlights
-export const AnswerSheetViewer = ({ selectedQuestionId, sessionData }) => {
+// Reason: AnswerSheetViewer with functional responsive zoom and scrollable answer canvas
+export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessionData }) => {
   const [zoom, setZoom] = useState(100);
   const [page, setPage] = useState(1);
+  const activeBoxRef = useRef(null);
 
   const answerPages = sessionData?.answer_pages || [];
   const totalPages = answerPages.length;
@@ -14,32 +15,45 @@ export const AnswerSheetViewer = ({ selectedQuestionId, sessionData }) => {
   const activeMapping = mappings.find((m) => m.question_id === selectedQuestionId);
   const activeSegmentIds = activeMapping ? activeMapping.answer_segment_ids : [];
 
-  // Auto-navigate to the page containing the mapped answer segment
+  // Auto-navigate to page and scroll to active answer box
   useEffect(() => {
     if (selectedQuestionId && activeSegmentIds.length > 0) {
       const targetSeg = answerSegments.find((s) => activeSegmentIds.includes(s.id));
       if (targetSeg && targetSeg.page && targetSeg.page !== page) {
         setPage(targetSeg.page);
       }
+      setTimeout(() => {
+        activeBoxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
     }
-  }, [selectedQuestionId, activeSegmentIds, answerSegments]);
+  }, [selectedQuestionId, activeSegmentIds, answerSegments, page]);
 
   const currentPageSegments = answerSegments.filter((s) => s.page === page);
   const currentImg = answerPages[page - 1];
 
+  const handleBoxClick = (segId) => {
+    const mappedItem = mappings.find((m) => m.answer_segment_ids?.includes(segId));
+    if (mappedItem && onSelectQuestion) {
+      onSelectQuestion(mappedItem.question_id);
+    }
+  };
+
+  const handleZoomChange = (delta) => {
+    setZoom((prev) => Math.max(40, Math.min(250, prev + delta)));
+  };
+
   return (
     <section className="review-sheet-pane">
-      {/* Dark Top Header Bar */}
       <div className="review-sheet-header">
         <h2 className="sheet-header-title">Answer Sheet</h2>
         {totalPages > 0 && (
           <div className="sheet-header-controls">
-            {/* Zoom Pill */}
+            {/* Functional Zoom Pill */}
             <div className="control-pill">
               <button
                 type="button"
                 aria-label="Zoom out"
-                onClick={() => setZoom((z) => Math.max(50, z - 10))}
+                onClick={() => handleZoomChange(-15)}
                 className="pill-icon-btn"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -48,14 +62,14 @@ export const AnswerSheetViewer = ({ selectedQuestionId, sessionData }) => {
               <button
                 type="button"
                 aria-label="Zoom in"
-                onClick={() => setZoom((z) => Math.min(200, z + 10))}
+                onClick={() => handleZoomChange(15)}
                 className="pill-icon-btn"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
               </button>
             </div>
 
-            {/* Page Pill */}
+            {/* Page Navigation Pill */}
             <div className="control-pill">
               <button
                 type="button"
@@ -81,23 +95,27 @@ export const AnswerSheetViewer = ({ selectedQuestionId, sessionData }) => {
         )}
       </div>
 
-      {/* Sheet Body */}
       <div className="review-sheet-body">
         {totalPages > 0 && currentImg ? (
-          <div className="real-image-wrapper" style={{ transform: `scale(${zoom / 100})` }}>
-            <div className="sheet-image-canvas">
+          <div className="sheet-scroll-container">
+            <div
+              className="sheet-image-canvas"
+              style={{ width: `${Math.round(750 * (zoom / 100))}px` }}
+            >
               <img
                 src={currentImg}
                 alt={`Answer Sheet Page ${page}`}
                 className="real-sheet-image"
               />
-              {/* Render Bounding Box Overlays */}
+              {/* Surya OCR Bounding Box Overlays */}
               {currentPageSegments.map((seg) => {
                 const isActive = activeSegmentIds.includes(seg.id);
                 const b = seg.bbox || { x: 0.05, y: 0.05, w: 0.9, h: 0.1 };
                 return (
                   <div
                     key={seg.id}
+                    ref={isActive ? activeBoxRef : null}
+                    onClick={() => handleBoxClick(seg.id)}
                     className={`bbox-overlay ${isActive ? 'bbox-active' : ''}`}
                     style={{
                       left: `${b.x * 100}%`,
@@ -125,7 +143,7 @@ export const AnswerSheetViewer = ({ selectedQuestionId, sessionData }) => {
             </div>
             <p className="placeholder-title">No Answer Sheet Uploaded</p>
             <p className="placeholder-desc">
-              Upload a student handwritten answer sheet on the upload screen to view page mappings, bounding boxes, and AI grading.
+              Upload a student handwritten answer sheet to view line bounding boxes and mapped answers.
             </p>
           </div>
         )}
