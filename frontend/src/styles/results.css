@@ -68,16 +68,54 @@
 .sheet-image-canvas { position: relative; flex-shrink: 0; border-radius: 0; overflow: visible; background: transparent; }
 .real-sheet-image { display: block; width: 100%; height: auto; border-radius: 0; }
 
+/* Bounding Box Tone Variants */
 .bbox-overlay {
-  position: absolute; border: 2px dashed rgba(34, 197, 94, 0.6); background: rgba(34, 197, 94, 0.08);
-  border-radius: 4px; pointer-events: auto; transition: all 0.2s ease; cursor: pointer;
+  position: absolute; border-radius: 4px; pointer-events: auto; transition: all 0.2s ease; cursor: pointer;
 }
-.bbox-overlay:hover, .bbox-overlay.bbox-active {
+.bbox-overlay.bbox-good, .bbox-overlay.bbox-default {
+  border: 2px dashed rgba(34, 197, 94, 0.7); background: rgba(34, 197, 94, 0.08);
+}
+.bbox-overlay.bbox-good:hover, .bbox-overlay.bbox-good.bbox-active {
   border: 2.5px solid #16a34a; background: rgba(34, 197, 94, 0.18); box-shadow: 0 0 12px rgba(34, 197, 94, 0.4); z-index: 10;
 }
+.bbox-overlay.bbox-bad {
+  border: 2px dashed rgba(239, 68, 68, 0.75); background: rgba(239, 68, 68, 0.08);
+}
+.bbox-overlay.bbox-bad:hover, .bbox-overlay.bbox-bad.bbox-active {
+  border: 2.5px solid #dc2626; background: rgba(239, 68, 68, 0.18); box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); z-index: 10;
+}
+.bbox-overlay.bbox-partial {
+  border: 2px dashed rgba(245, 158, 11, 0.75); background: rgba(245, 158, 11, 0.08);
+}
+.bbox-overlay.bbox-partial:hover, .bbox-overlay.bbox-partial.bbox-active {
+  border: 2.5px solid #d97706; background: rgba(245, 158, 11, 0.18); box-shadow: 0 0 12px rgba(245, 158, 11, 0.4); z-index: 10;
+}
+
+/* Label Tags & Handwritten Score Stamps */
 .bbox-label-tag {
-  position: absolute; top: -10px; left: 4px; border-radius: 4px; background: #16a34a; color: #ffffff;
+  position: absolute; top: -10px; left: 4px; border-radius: 4px; color: #ffffff;
   padding: 1px 6px; font-size: 10px; font-weight: 700; font-family: var(--font-sans); line-height: 14px;
+}
+.tag-good, .tag-default { background: #16a34a; }
+.tag-bad { background: #dc2626; }
+.tag-partial { background: #d97706; }
+
+.bbox-score-stamp {
+  position: absolute; right: 4px; top: -11px; font-family: 'Kalam', 'Caveat', cursive, sans-serif;
+  font-size: 13px; font-weight: 800; padding: 1px 7px; border-radius: 6px; line-height: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.stamp-good { background: #f0fdf4; color: #15803d; border: 1.2px solid #22c55e; }
+.stamp-bad { background: #fef2f2; color: #dc2626; border: 1.2px solid #ef4444; }
+.stamp-partial { background: #fffbeb; color: #b45309; border: 1.2px solid #f59e0b; }
+
+.teacher-bottom-score-box {
+  position: absolute; bottom: 24px; right: 24px; border: 2.5px solid #dc2626; border-radius: 8px;
+  background: rgba(254, 242, 242, 0.95); padding: 6px 14px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transform: rotate(-2deg); z-index: 20;
+}
+.teacher-score-text {
+  font-family: 'Kalam', 'Caveat', cursive, sans-serif; font-size: 20px; font-weight: 800;
+  color: #dc2626; letter-spacing: 0.5px;
 }
 
 .no-answer-sheet-placeholder {

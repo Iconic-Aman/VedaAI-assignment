@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// Reason: AnswerSheetViewer edge-to-edge responsive canvas with dynamic zoom
+// Reason: AnswerSheetViewer with red/green/orange boxes, handwritten score stamps, and teacher total score
 export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessionData }) => {
   const [zoom, setZoom] = useState(100);
   const [page, setPage] = useState(1);
@@ -10,6 +10,24 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
   const totalPages = answerPages.length;
   const answerSegments = sessionData?.answer_segments || [];
   const mappings = sessionData?.mappings || [];
+  const grading = sessionData?.grading || {};
+  const questionsList = sessionData?.questions || [];
+
+  // Calculate overall marks
+  let totalEarned = 0;
+  let totalMax = 0;
+  if (questionsList.length > 0) {
+    questionsList.forEach((q) => {
+      const g = grading[q.id];
+      totalEarned += Number(g?.score || 0);
+      totalMax += Number(g?.total || q.max_score || 5);
+    });
+  } else {
+    Object.values(grading).forEach((g) => {
+      totalEarned += Number(g.score || 0);
+      totalMax += Number(g.total || 5);
+    });
+  }
 
   // Find active segment IDs for selected question
   const activeMapping = mappings.find((m) => m.question_id === selectedQuestionId);
@@ -107,16 +125,29 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
                 alt={`Answer Sheet Page ${page}`}
                 className="real-sheet-image"
               />
-              {/* Bounding Box Overlays */}
+              {/* Bounding Box Overlays with Tone and Score Marks */}
               {currentPageSegments.map((seg) => {
                 const isActive = activeSegmentIds.includes(seg.id);
                 const b = seg.bbox || { x: 0.05, y: 0.05, w: 0.9, h: 0.1 };
+
+                const mappedItem = mappings.find((m) => m.answer_segment_ids?.includes(seg.id));
+                const grade = mappedItem ? grading[mappedItem.question_id] : null;
+
+                let tone = 'default';
+                let scoreText = '';
+                if (grade) {
+                  if (grade.score === 0) tone = 'bad';
+                  else if (grade.score === grade.total) tone = 'good';
+                  else tone = 'partial';
+                  scoreText = `${grade.score}/${grade.total}`;
+                }
+
                 return (
                   <div
                     key={seg.id}
                     ref={isActive ? activeBoxRef : null}
                     onClick={() => handleBoxClick(seg.id)}
-                    className={`bbox-overlay ${isActive ? 'bbox-active' : ''}`}
+                    className={`bbox-overlay bbox-${tone} ${isActive ? 'bbox-active' : ''}`}
                     style={{
                       left: `${b.x * 100}%`,
                       top: `${b.y * 100}%`,
@@ -125,10 +156,22 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
                     }}
                     title={seg.text}
                   >
-                    {seg.label && <span className="bbox-label-tag">{seg.label}</span>}
+                    {seg.label && (
+                      <span className={`bbox-label-tag tag-${tone}`}>{seg.label}</span>
+                    )}
+                    {scoreText && (
+                      <span className={`bbox-score-stamp stamp-${tone}`}>{scoreText}</span>
+                    )}
                   </div>
                 );
               })}
+
+              {/* Teacher Overall Score Stamp at Bottom of Page */}
+              {totalMax > 0 && (
+                <div className="teacher-bottom-score-box">
+                  <span className="teacher-score-text">Total = {totalEarned} / {totalMax}</span>
+                </div>
+              )}
             </div>
           </div>
         ) : (
