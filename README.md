@@ -10,13 +10,21 @@
 ## 📸 Application Screenshots & Demo
 
 ### 1. Document Upload Screen
-![VedaAI Upload Interface](./images/upload_screen.png)
+![VedaAI Upload Interface](docs/images/upload_screen.png)
 
-### 2. Live Graded Answer Sheet with 2D Spatial Grounding & Score Stamps
-![Graded Answer Sheet](./images/results_evaluation.png)
+### 2. Complete Evaluated Results & Live Graded Sheet
+![VedaAI Evaluated Results](docs/images/demo_page.png)
 
-### 3. Complete Evaluated Results Overview
-![VedaAI Demo Page](./images/demo_page.png)
+📄 **Sample Graded PDF Export**: [Download Evaluated PDF (`graded_answer_sheet_page_1-4.pdf`)](./sample_documents/graded_answer_sheet_page_1-4.pdf)
+
+---
+
+## 📁 Sample Test Documents
+
+Sample question papers and handwritten answer sheets are organized in the [`sample_documents/`](./sample_documents/) folder:
+- **Questions**: [`question2.pdf`](./sample_documents/question2.pdf), [`history-ques-paper.pdf`](./sample_documents/history-ques-paper.pdf), [`geography-question-paper.pdf`](./sample_documents/geography-question-paper.pdf)
+- **Answers**: [`answer2.pdf`](./sample_documents/answer2.pdf), [`history-ans-sheet.pdf`](./sample_documents/history-ans-sheet.pdf), [`geograph-answer-sheet.pdf`](./sample_documents/geograph-answer-sheet.pdf)
+- **Sample Export**: [`graded_answer_sheet_page_1-4.pdf`](./sample_documents/graded_answer_sheet_page_1-4.pdf)
 
 ---
 
