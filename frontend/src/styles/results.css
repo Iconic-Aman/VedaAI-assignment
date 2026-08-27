@@ -47,14 +47,23 @@
 
 /* Review Sheet Pane & Dark Controls */
 .review-sheet-pane { display: flex; flex-direction: column; background: #1e1e24; min-height: 0; height: 100%; overflow: hidden; }
-.review-sheet-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: #1e1e24; gap: 12px; flex-shrink: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.review-sheet-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: #1e1e24; gap: 10px; flex-shrink: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
 .sheet-header-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; }
 .sheet-header-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
 .control-pill {
   display: inline-flex; align-items: center; gap: 8px; border-radius: 10px;
   background: #323238; padding: 6px 10px; font-size: 13px; font-weight: 600;
   color: #ffffff; white-space: nowrap; user-select: none;
 }
+.download-square-btn {
+  width: 32px; height: 32px; border-radius: 10px; background: #323238; border: none;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  color: #ffffff; padding: 0; transition: background 0.15s, opacity 0.15s; flex-shrink: 0;
+}
+.download-square-btn:hover { background: #404048; opacity: 0.9; }
+.download-square-btn svg { width: 15px; height: 15px; }
+
 .pill-icon-btn {
   width: 20px; height: 20px; border: none; background: transparent;
   display: flex; align-items: center; justify-content: center; cursor: pointer;

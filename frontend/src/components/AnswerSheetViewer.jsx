@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { jsPDF } from 'jspdf';
 
-// Reason: AnswerSheetViewer with red/green/orange boxes, handwritten score stamps, and teacher total score
+// Reason: AnswerSheetViewer with PDF download, centered download button, and score stamps
 export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessionData }) => {
   const [zoom, setZoom] = useState(100);
   const [page, setPage] = useState(1);
@@ -24,16 +25,14 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
     });
   } else {
     Object.values(grading).forEach((g) => {
-      totalEarned += Number(g.score || 0);
-      totalMax += Number(g.total || 5);
+      totalEarned += Number(g?.score || 0);
+      totalMax += Number(g?.total || 5);
     });
   }
 
-  // Find active segment IDs for selected question
   const activeMapping = mappings.find((m) => m.question_id === selectedQuestionId);
   const activeSegmentIds = activeMapping ? activeMapping.answer_segment_ids : [];
 
-  // Auto-navigate to page and scroll to active answer box
   useEffect(() => {
     if (selectedQuestionId && activeSegmentIds.length > 0) {
       const targetSeg = answerSegments.find((s) => activeSegmentIds.includes(s.id));
@@ -56,8 +55,82 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
     }
   };
 
-  const handleZoomChange = (delta) => {
-    setZoom((prev) => Math.max(50, Math.min(250, prev + delta)));
+  const handleDownloadPdf = () => {
+    if (!currentImg) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = currentImg;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.drawImage(img, 0, 0, w, h);
+      currentPageSegments.forEach((seg) => {
+        const b = seg.bbox || { x: 0.05, y: 0.05, w: 0.9, h: 0.1 };
+        const bx = b.x * w;
+        const by = b.y * h;
+        const bw = b.w * w;
+        const bh = b.h * h;
+
+        const mappedItem = mappings.find((m) => m.answer_segment_ids?.includes(seg.id));
+        const grade = mappedItem ? grading[mappedItem.question_id] : null;
+
+        let col = '#16a34a';
+        let bgCol = 'rgba(34, 197, 94, 0.12)';
+        let score = '';
+        if (grade) {
+          col = grade.score === 0 ? '#dc2626' : grade.score === grade.total ? '#16a34a' : '#d97706';
+          bgCol = grade.score === 0 ? 'rgba(239, 68, 68, 0.12)' : grade.score === grade.total ? 'rgba(34, 197, 94, 0.12)' : 'rgba(245, 158, 11, 0.12)';
+          score = `${grade.score}/${grade.total}`;
+        }
+
+        ctx.strokeStyle = col;
+        ctx.lineWidth = Math.max(3, Math.round(w / 400));
+        ctx.setLineDash([10, 6]);
+        ctx.strokeRect(bx, by, bw, bh);
+        ctx.setLineDash([]);
+        ctx.fillStyle = bgCol;
+        ctx.fillRect(bx, by, bw, bh);
+
+        if (seg.label) {
+          ctx.fillStyle = col;
+          ctx.fillRect(bx, Math.max(0, by - 26), 44, 26);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 16px sans-serif';
+          ctx.fillText(seg.label, bx + 6, Math.max(18, by - 7));
+        }
+        if (score) {
+          ctx.fillStyle = col;
+          ctx.font = 'bold 22px cursive, sans-serif';
+          ctx.fillText(score, bx + bw - 60, Math.max(22, by - 6));
+        }
+      });
+
+      if (totalMax > 0) {
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(w - 230, h - 75, 200, 52);
+        ctx.fillStyle = 'rgba(254, 242, 242, 0.9)';
+        ctx.fillRect(w - 230, h - 75, 200, 52);
+        ctx.fillStyle = '#dc2626';
+        ctx.font = 'bold 24px cursive, sans-serif';
+        ctx.fillText(`Total = ${totalEarned}/${totalMax}`, w - 215, h - 40);
+      }
+
+      // Generate PDF from Canvas
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({
+        orientation: w > h ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [w, h]
+      });
+      pdf.addImage(imgData, 'JPEG', 0, 0, w, h);
+      pdf.save(`graded_answer_sheet_page_${page}.pdf`);
+    };
   };
 
   return (
@@ -66,12 +139,12 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
         <h2 className="sheet-header-title">Answer Sheet</h2>
         {totalPages > 0 && (
           <div className="sheet-header-controls">
-            {/* Functional Zoom Pill */}
+            {/* Zoom Pill */}
             <div className="control-pill">
               <button
                 type="button"
                 aria-label="Zoom out"
-                onClick={() => handleZoomChange(-15)}
+                onClick={() => setZoom((z) => Math.max(50, z - 15))}
                 className="pill-icon-btn"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -80,12 +153,23 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
               <button
                 type="button"
                 aria-label="Zoom in"
-                onClick={() => handleZoomChange(15)}
+                onClick={() => setZoom((z) => Math.min(250, z + 15))}
                 className="pill-icon-btn"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
               </button>
             </div>
+
+            {/* Square PDF Download Button (Placed in Middle) */}
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              className="download-square-btn"
+              title="Download Graded Sheet as PDF"
+              aria-label="Download Graded Sheet as PDF"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="btn-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </button>
 
             {/* Page Navigation Pill */}
             <div className="control-pill">
@@ -125,7 +209,7 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
                 alt={`Answer Sheet Page ${page}`}
                 className="real-sheet-image"
               />
-              {/* Bounding Box Overlays with Tone and Score Marks */}
+              {/* Bounding Box Overlays */}
               {currentPageSegments.map((seg) => {
                 const isActive = activeSegmentIds.includes(seg.id);
                 const b = seg.bbox || { x: 0.05, y: 0.05, w: 0.9, h: 0.1 };
@@ -136,9 +220,7 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
                 let tone = 'default';
                 let scoreText = '';
                 if (grade) {
-                  if (grade.score === 0) tone = 'bad';
-                  else if (grade.score === grade.total) tone = 'good';
-                  else tone = 'partial';
+                  tone = grade.score === 0 ? 'bad' : grade.score === grade.total ? 'good' : 'partial';
                   scoreText = `${grade.score}/${grade.total}`;
                 }
 
@@ -166,7 +248,7 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
                 );
               })}
 
-              {/* Teacher Overall Score Stamp at Bottom of Page */}
+              {/* Teacher Overall Score Stamp */}
               {totalMax > 0 && (
                 <div className="teacher-bottom-score-box">
                   <span className="teacher-score-text">Total = {totalEarned} / {totalMax}</span>
