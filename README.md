@@ -2,7 +2,8 @@
 
 > An end-to-end AI-powered document intelligence system that extracts printed exam questions, isolates student handwritten answers using 2D spatial grounding, maps responses to questions, performs automated grading, and renders interactive annotated answer sheets.
 
-🔗 **Live Deployment**: [https://veda-ai-assignment-iota.vercel.app/](https://veda-ai-assignment-iota.vercel.app/)
+🔗 **Live Deployment**: [https://veda-ai-assignment-iota.vercel.app/](https://veda-ai-assignment-iota.vercel.app/)  
+📹 **Video Demo**: [Watch Walkthrough & Demo](https://go.screenpal.com/watch/cOjtqenwjy1)
 
 ---
 
