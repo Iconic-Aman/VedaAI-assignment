@@ -7,8 +7,8 @@ function fmtSize(bytes) {
   return `${Math.max(1, Math.round(bytes / 1024 / 1024))}MB`;
 }
 
-// Reason: UploadScreen with immediate extraction trigger on question upload matching Pixel Perfect UI
-export const UploadScreen = ({ files, setFiles, onStartMapping, onDirectQuestionUpload }) => {
+// Reason: UploadScreen supporting independent file uploads and Start Mapping activation
+export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
   const targetRef = useRef('question');
   const inputRef = useRef(null);
 
@@ -29,24 +29,20 @@ export const UploadScreen = ({ files, setFiles, onStartMapping, onDirectQuestion
     };
     setFiles((prev) => ({ ...prev, [kind]: info }));
     e.target.value = '';
-
-    if (kind === 'question' && onDirectQuestionUpload) {
-      onDirectQuestionUpload(f);
-    }
   };
 
   const handleRemove = (which) => {
     setFiles((prev) => ({ ...prev, [which]: null }));
   };
 
-  const ready = Boolean(files.question);
+  const ready = Boolean(files.question || files.answer);
 
   return (
     <div className="upload-wrap">
       <h1 className="upload-title">
         Upload <span className="highlight-brand">Question Paper &amp; Answer Sheets</span>
       </h1>
-      <p className="upload-sub">Upload both files to get started</p>
+      <p className="upload-sub">Upload files to get started</p>
 
       {/* Framer Hero Avatar */}
       <div className="hero-avatar-wrap">
@@ -83,7 +79,7 @@ export const UploadScreen = ({ files, setFiles, onStartMapping, onDirectQuestion
                 <span className="pdf-badge">PDF</span>
                 <div className="file-info-text">
                   <p className="file-info-name">{files.question.name}</p>
-                  <p className="file-info-meta">{files.question.size} • {files.question.pages}</p>
+                  <p className="file-info-meta">{files.question.size}</p>
                 </div>
               </div>
               <button type="button" aria-label="Remove question paper" onClick={() => handleRemove('question')} className="remove-file-btn">
@@ -107,7 +103,7 @@ export const UploadScreen = ({ files, setFiles, onStartMapping, onDirectQuestion
                 <span className="pdf-badge">PDF</span>
                 <div className="file-info-text">
                   <p className="file-info-name">{files.answer.name}</p>
-                  <p className="file-info-meta">{files.answer.size} • {files.answer.pages}</p>
+                  <p className="file-info-meta">{files.answer.size}</p>
                 </div>
               </div>
               <button type="button" aria-label="Remove answer sheet" onClick={() => handleRemove('answer')} className="remove-file-btn">
@@ -137,7 +133,9 @@ export const UploadScreen = ({ files, setFiles, onStartMapping, onDirectQuestion
             ? "Both files ready — click Start Mapping to extract and map answers"
             : files.question
             ? "Question paper ready — click Start Mapping to extract questions"
-            : "Upload question paper to extract questions"}
+            : files.answer
+            ? "Answer sheet ready — click Start Mapping to process"
+            : "Upload question paper or answer sheet to start"}
         </p>
       </div>
 
