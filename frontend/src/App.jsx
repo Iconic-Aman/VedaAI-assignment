@@ -8,7 +8,7 @@ import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
 import { uploadFiles, processSession, getSessionData } from './services/api';
 
-// Reason: Root App component executing real backend extraction pipeline
+// Reason: Root App supporting Surya OCR answer extraction and question mapping pipeline
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -16,12 +16,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('questions'); // 'questions' | 'answer'
   const [files, setFiles] = useState({ question: null, answer: null });
   const [questions, setQuestions] = useState(DUMMY_QUESTIONS);
-  const [selectedQuestionId, setSelectedQuestionId] = useState(2);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [sessionData, setSessionData] = useState(null);
 
   const handleStartMapping = async (directFile = null) => {
     const qFile = directFile || files.question?.file;
     const aFile = files.answer?.file || null;
+
+    if (!qFile && !aFile) return;
 
     setSidebarCollapsed(true);
     setMobileMenuOpen(false);
@@ -29,14 +31,8 @@ export default function App() {
 
     const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
 
-    if (!qFile) {
-      await minDelay;
-      setCurrentScreen('results');
-      return;
-    }
-
     try {
-      console.log('[Frontend] Starting backend extraction pipeline...');
+      console.log('[Frontend] Starting upload & processing...');
       const [uploadRes] = await Promise.all([
         uploadFiles(qFile, aFile),
         minDelay
@@ -46,7 +42,7 @@ export default function App() {
         console.log('[Frontend] Session created:', uploadRes.session_id);
         await processSession(uploadRes.session_id);
         const fullData = await getSessionData(uploadRes.session_id);
-        console.log('[Frontend] Received data from backend:', fullData);
+        console.log('[Frontend] Extracted full session data:', fullData);
 
         if (fullData?.questions && fullData.questions.length > 0) {
           const mappedQs = fullData.questions.map((q, idx) => {
@@ -65,10 +61,12 @@ export default function App() {
               full_label: q.full_label || String(idx + 1)
             };
           });
-          console.log('[Frontend] Rendering real extracted questions:', mappedQs);
           setQuestions(mappedQs);
-          setSessionData(fullData);
+          if (mappedQs.length > 0) {
+            setSelectedQuestionId(mappedQs[0].id);
+          }
         }
+        setSessionData(fullData);
       }
     } catch (err) {
       console.error('[Frontend] Backend extraction failed:', err);
@@ -105,7 +103,6 @@ export default function App() {
               files={files}
               setFiles={setFiles}
               onStartMapping={() => handleStartMapping()}
-              onDirectQuestionUpload={(f) => handleStartMapping(f)}
             />
           )}
 
@@ -113,7 +110,6 @@ export default function App() {
 
           {currentScreen === 'results' && (
             <div className="review-main-wrapper">
-              {/* Mobile Tab Switcher */}
               <div className="mobile-tab-bar">
                 <div className="mobile-tab-pill-grid">
                   <button
@@ -144,6 +140,7 @@ export default function App() {
                 <div className={`tab-pane-wrap ${activeTab === 'answer' ? 'mobile-visible' : 'mobile-hidden'}`}>
                   <AnswerSheetViewer
                     selectedQuestionId={selectedQuestionId}
+                    onSelectQuestion={(id) => setSelectedQuestionId(id)}
                     sessionData={sessionData}
                   />
                 </div>
