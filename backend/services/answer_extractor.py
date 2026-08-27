@@ -7,22 +7,23 @@ from PIL import Image
 from models.schema import AnswerSegment, BBox
 from services.gemini_client import get_model
 
+# Reason: Generic, domain-agnostic prompt for handwritten answer segment extraction and spatial grounding
 ANSWER_PROMPT = """
-You are an expert handwritten exam grader. Analyze this handwritten answer sheet page.
-Extract every distinct answer segment/block written by the student.
+You are an expert handwritten exam analyzer and spatial document layout extractor.
+Scan the entire handwritten answer sheet page from top to bottom.
+Extract EVERY distinct handwritten answer block or response written by the student.
 
-Rules:
-1. Extract the written question label if present (e.g. "Q1", "Ans 2", "3(a)", "4.", or null if no label was written).
-2. Extract the complete handwritten text for that answer block.
-3. Provide approximate bounding box for this answer block in normalized coordinates (0.0 to 1.0 relative to page width/height):
-   {"x": 0.05, "y": 0.1, "w": 0.9, "h": 0.25}
+Guidelines:
+1. Detect all question markers or answer identifiers on the page (e.g., circled numbers, margin indicators, prefixes like Q1, Ans 2, (a), (b)).
+2. For every distinct answer, determine the precise 2D bounding box covering the question marker and the entire handwritten text for that response.
+3. Transcribe the complete handwritten text for each answer block.
 
-Return a JSON array:
+Return a JSON array of all detected answers on the page:
 [
   {
-    "label": "Q1",
-    "text": "...",
-    "bbox": {"x": 0.05, "y": 0.08, "w": 0.9, "h": 0.2}
+    "label": "1",
+    "box_2d": [100, 80, 250, 920],
+    "text": "Transcribed handwritten answer text..."
   }
 ]
 """
@@ -34,7 +35,7 @@ def clean_json_parse(text: str):
     clean = re.sub(r'```(?:json)?', '', text).strip()
     return json.loads(clean)
 
-# Reason: Extract raw answer segments with Gemini vision
+# Reason: Extract raw answer segments with accurate 2D coordinates
 def extract_answers_from_page(page_img: Image.Image, page_num: int) -> List[AnswerSegment]:
     for model_name in FALLBACK_MODELS:
         try:
@@ -51,13 +52,27 @@ def extract_answers_from_page(page_img: Image.Image, page_num: int) -> List[Answ
                 label = item.get("label")
                 label_str = str(label).strip() if label else None
                 text = str(item.get("text", "")).strip()
-                bbox_dict = item.get("bbox", {})
-                bbox = BBox(
-                    x=float(bbox_dict.get("x", 0.05)),
-                    y=float(bbox_dict.get("y", 0.05)),
-                    w=float(bbox_dict.get("w", 0.9)),
-                    h=float(bbox_dict.get("h", 0.2))
-                )
+
+                box_2d = item.get("box_2d")
+                if isinstance(box_2d, list) and len(box_2d) == 4:
+                    ymin, xmin, ymax, xmax = [float(v) for v in box_2d]
+                    ymin, xmin = max(0.0, ymin), max(0.0, xmin)
+                    ymax, xmax = min(1000.0, ymax), min(1000.0, xmax)
+                    bbox = BBox(
+                        x=round(xmin / 1000.0, 4),
+                        y=round(ymin / 1000.0, 4),
+                        w=round(max(0.01, (xmax - xmin) / 1000.0), 4),
+                        h=round(max(0.01, (ymax - ymin) / 1000.0), 4)
+                    )
+                else:
+                    bbox_dict = item.get("bbox", {})
+                    bbox = BBox(
+                        x=float(bbox_dict.get("x", 0.05)),
+                        y=float(bbox_dict.get("y", 0.05)),
+                        w=float(bbox_dict.get("w", 0.9)),
+                        h=float(bbox_dict.get("h", 0.2))
+                    )
+
                 seg = AnswerSegment(
                     id=str(uuid.uuid4()),
                     label=label_str,
