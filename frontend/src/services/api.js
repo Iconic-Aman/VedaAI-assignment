@@ -1,6 +1,6 @@
-// Reason: API client fetching base URL and Bearer token exclusively from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-const API_TOKEN = import.meta.env.VITE_API_TOKEN || '';
+// Reason: API client fetching base URL and Bearer token with aman-secret fallback
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_TOKEN = import.meta.env.VITE_API_TOKEN || 'aman-secret';
 
 function getAuthHeaders(customHeaders = {}) {
   const headers = { ...customHeaders };
@@ -19,28 +19,43 @@ export async function uploadFiles(questionFile, answerFile = null) {
     formData.append('answer_sheet', answerFile);
   }
 
-  const res = await fetch(`${API_BASE_URL}/upload`, {
+  const url = `${API_BASE_URL}/upload`;
+  console.log(`[API] Uploading files to: ${url}`);
+  const res = await fetch(url, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: formData
   });
-  if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`Upload failed (${res.status}): ${errText || res.statusText}`);
+  }
   return res.json();
 }
 
 export async function processSession(sessionId) {
-  const res = await fetch(`${API_BASE_URL}/process/${sessionId}`, {
+  const url = `${API_BASE_URL}/process/${sessionId}`;
+  console.log(`[API] Processing session at: ${url}`);
+  const res = await fetch(url, {
     method: 'POST',
     headers: getAuthHeaders({ 'Content-Type': 'application/json' })
   });
-  if (!res.ok) throw new Error(`Process failed: ${res.statusText}`);
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`Process failed (${res.status}): ${errText || res.statusText}`);
+  }
   return res.json();
 }
 
 export async function getSessionData(sessionId) {
-  const res = await fetch(`${API_BASE_URL}/session/${sessionId}`, {
+  const url = `${API_BASE_URL}/session/${sessionId}`;
+  console.log(`[API] Fetching session results from: ${url}`);
+  const res = await fetch(url, {
     headers: getAuthHeaders()
   });
-  if (!res.ok) throw new Error(`Fetch session failed: ${res.statusText}`);
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`Fetch session failed (${res.status}): ${errText || res.statusText}`);
+  }
   return res.json();
 }

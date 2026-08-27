@@ -6,7 +6,7 @@ function getTone(q) {
   return 'tone-partial';
 }
 
-// Reason: QuestionList component matching Pixel Perfect UI ExamReview.tsx
+// Reason: QuestionList component displaying extracted questions and scores
 export const QuestionList = ({ questions, selectedId, onSelectQuestion }) => {
   const [openIds, setOpenIds] = useState([2]);
 
@@ -27,7 +27,7 @@ export const QuestionList = ({ questions, selectedId, onSelectQuestion }) => {
     <section className="review-questions-pane">
       <div className="review-questions-header">
         <h2 className="review-header-title">
-          Extracted Questions <span className="review-header-sub">(from question paper)</span>
+          Extracted Questions <span className="review-header-sub">({questions.length} from question paper)</span>
         </h2>
         <button
           type="button"
@@ -41,13 +41,12 @@ export const QuestionList = ({ questions, selectedId, onSelectQuestion }) => {
       <div className="review-questions-list">
         {questions.map((q) => {
           const isOpen = openIds.includes(q.n);
-          const isSelected = selectedId === q.n;
           const toneClass = getTone(q);
 
           return (
             <div
               key={q.n}
-              className={`question-row-card ${isOpen || isSelected ? 'active-row' : ''}`}
+              className={`question-row-card ${isOpen ? 'active-row' : ''}`}
             >
               <div className="question-row-header" onClick={() => toggle(q.n)}>
                 <span className={`question-number-badge ${isOpen ? 'active-badge' : ''}`}>
@@ -76,7 +75,7 @@ export const QuestionList = ({ questions, selectedId, onSelectQuestion }) => {
                 <div className="question-feedback-drawer">
                   <div className="question-feedback-inner">
                     <p className="feedback-heading">AI Feedback</p>
-                    <p className="feedback-content">{q.feedback}</p>
+                    <p className="feedback-content">{q.feedback || 'Extracted from question paper.'}</p>
                   </div>
                 </div>
               )}

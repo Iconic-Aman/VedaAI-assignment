@@ -1,11 +1,16 @@
 import re
 import json
 from typing import List, Tuple, Dict, Set
-from rapidfuzz import fuzz
 from models.schema import Question, AnswerSegment, MappingItem
 from services.gemini_client import get_model
 
-# Reason: Normalize and parse label string (e.g., 'Q11(a)' -> '11a', 'Ans 3' -> '3')
+try:
+    from rapidfuzz import fuzz
+    HAS_FUZZ = True
+except ImportError:
+    HAS_FUZZ = False
+
+# Reason: Normalize label string (e.g., 'Q11(a)' -> '11a')
 def normalize_label(label: str) -> str:
     if not label:
         return ""
@@ -31,7 +36,7 @@ def map_answers_to_questions(
     q_to_segs: Dict[str, List[str]] = {q.id: [] for q in questions}
     q_match_type: Dict[str, str] = {q.id: "none" for q in questions}
 
-    # Pass 1: Regex direct match
+    # Pass 1: Direct normalized string match
     for seg in answers:
         if not seg.label:
             continue
@@ -42,23 +47,24 @@ def map_answers_to_questions(
             matched_seg_ids.add(seg.id)
             q_match_type[qid] = "label"
 
-    # Pass 2: Fuzzy match for unlinked labelled segments
-    for seg in answers:
-        if seg.id in matched_seg_ids or not seg.label:
-            continue
-        n_lbl = normalize_label(seg.label)
-        best_score = 0
-        best_qid = None
-        for q_key, qid in q_lookup.items():
-            score = fuzz.ratio(n_lbl, q_key)
-            if score > 80 and score > best_score:
-                best_score = score
-                best_qid = qid
-        if best_qid:
-            q_to_segs[best_qid].append(seg.id)
-            matched_seg_ids.add(seg.id)
-            if q_match_type[best_qid] == "none":
-                q_match_type[best_qid] = "fuzzy"
+    # Pass 2: Fuzzy match if library available
+    if HAS_FUZZ:
+        for seg in answers:
+            if seg.id in matched_seg_ids or not seg.label:
+                continue
+            n_lbl = normalize_label(seg.label)
+            best_score = 0
+            best_qid = None
+            for q_key, qid in q_lookup.items():
+                score = fuzz.ratio(n_lbl, q_key)
+                if score > 80 and score > best_score:
+                    best_score = score
+                    best_qid = qid
+            if best_qid:
+                q_to_segs[best_qid].append(seg.id)
+                matched_seg_ids.add(seg.id)
+                if q_match_type[best_qid] == "none":
+                    q_match_type[best_qid] = "fuzzy"
 
     # Pass 3: LLM Semantic fallback for unlabeled segments
     unmatched_segs = [s for s in answers if s.id not in matched_seg_ids]
