@@ -13,7 +13,7 @@
 ![VedaAI Upload Interface](docs/images/upload_screen.png)
 
 ### 2. Complete Evaluated Results & Live Graded Sheet
-![VedaAI Evaluated Results](docs/images/demo_page.png)
+![VedaAI Evaluated Results](docs/images/evaluated_results.png)
 
 📄 **Sample Graded PDF Export**: [Download Evaluated PDF (`graded_answer_sheet_page_1-4.pdf`)](./sample_documents/graded_answer_sheet_page_1-4.pdf)
 
