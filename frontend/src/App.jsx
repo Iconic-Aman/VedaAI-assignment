@@ -8,7 +8,7 @@ import { AnswerSheetViewer } from './components/AnswerSheetViewer';
 import { DUMMY_QUESTIONS } from './data/dummyData';
 import { uploadFiles, processSession, getSessionData } from './services/api';
 
-// Reason: Root App with standard desktop sidebar and hidden-by-default mobile right drawer
+// Reason: Root App component executing real backend extraction pipeline
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('upload'); // 'upload' | 'extracting' | 'results'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -29,43 +29,49 @@ export default function App() {
 
     const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
 
-    try {
-      if (qFile) {
-        const uploadPromise = (async () => {
-          const uploadRes = await uploadFiles(qFile, aFile);
-          if (uploadRes?.session_id) {
-            await processSession(uploadRes.session_id);
-            const fullData = await getSessionData(uploadRes.session_id);
-            if (fullData?.questions?.length) {
-              const mappedQs = fullData.questions.map((q, idx) => {
-                const grade = fullData.grading?.[q.id] || {
-                  score: q.max_score,
-                  total: q.max_score,
-                  feedback: 'Extracted from question paper.'
-                };
-                return {
-                  n: idx + 1,
-                  id: q.id,
-                  text: q.text,
-                  score: grade.score,
-                  total: grade.total,
-                  feedback: grade.feedback,
-                  full_label: q.full_label
-                };
-              });
-              setQuestions(mappedQs);
-              setSessionData(fullData);
-            }
-          }
-        })();
+    if (!qFile) {
+      await minDelay;
+      setCurrentScreen('results');
+      return;
+    }
 
-        await Promise.all([minDelay, uploadPromise]);
-      } else {
-        await minDelay;
+    try {
+      console.log('[Frontend] Starting backend extraction pipeline...');
+      const [uploadRes] = await Promise.all([
+        uploadFiles(qFile, aFile),
+        minDelay
+      ]);
+
+      if (uploadRes?.session_id) {
+        console.log('[Frontend] Session created:', uploadRes.session_id);
+        await processSession(uploadRes.session_id);
+        const fullData = await getSessionData(uploadRes.session_id);
+        console.log('[Frontend] Received data from backend:', fullData);
+
+        if (fullData?.questions && fullData.questions.length > 0) {
+          const mappedQs = fullData.questions.map((q, idx) => {
+            const grade = fullData.grading?.[q.id] || {
+              score: q.max_score || 5,
+              total: q.max_score || 5,
+              feedback: 'Extracted from question paper.'
+            };
+            return {
+              n: idx + 1,
+              id: q.id,
+              text: q.text,
+              score: grade.score,
+              total: grade.total,
+              feedback: grade.feedback,
+              full_label: q.full_label || String(idx + 1)
+            };
+          });
+          console.log('[Frontend] Rendering real extracted questions:', mappedQs);
+          setQuestions(mappedQs);
+          setSessionData(fullData);
+        }
       }
     } catch (err) {
-      console.warn('Backend unavailable, using preview questions:', err);
-      await minDelay;
+      console.error('[Frontend] Backend extraction failed:', err);
     } finally {
       setCurrentScreen('results');
     }

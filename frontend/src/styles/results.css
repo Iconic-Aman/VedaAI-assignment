@@ -34,7 +34,7 @@
 .question-row-header { display: flex; align-items: flex-start; gap: 12px; padding: 14px; cursor: pointer; user-select: none; }
 .question-number-badge { margin-top: 2px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: var(--qnum); color: var(--qnum-foreground); flex: none; }
 .question-number-badge.active-badge { background: var(--brand); color: #fff; }
-.question-row-text { flex: 1; font-size: 14px; line-height: 1.4; color: var(--foreground); margin: 0; padding-top: 3px; text-align: left; }
+.question-row-text { flex: 1; font-size: 14px; line-height: 1.45; color: var(--foreground); margin: 0; padding-top: 3px; text-align: left; white-space: pre-line; word-break: break-word; }
 .question-score-pill { margin-top: 2px; border-radius: 8px; padding: 4px 10px; font-size: 13px; font-weight: 600; flex: none; }
 .tone-good { background: #e6f6ec; color: #1e8e4e; }
 .tone-partial { background: #fef3e3; color: #c17a1f; }
@@ -43,7 +43,7 @@
 .question-feedback-drawer { padding: 0 14px 14px; }
 .question-feedback-inner { border-radius: 12px; background: var(--secondary); padding: 14px; text-align: left; }
 .feedback-heading { font-size: 14px; font-weight: 700; color: var(--foreground); margin: 0; }
-.feedback-content { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+.feedback-content { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); white-space: pre-line; }
 
 /* Review Sheet Pane */
 .review-sheet-pane { display: flex; flex-direction: column; background: #1e1e24; min-height: 0; height: 100%; }

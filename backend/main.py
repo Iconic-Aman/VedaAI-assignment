@@ -20,17 +20,25 @@ app = FastAPI(
     description="Backend API for question paper extraction, handwritten answer mapping, and AI grading with Bearer Auth."
 )
 
-# Reason: CORS middleware configuration with origins from environment variable
-cors_origins_env = os.getenv("CORS_ORIGINS", "*")
-origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins if origins else ["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Reason: CORS middleware configuration supporting wildcard origins and credentials
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+if cors_origins_env and cors_origins_env != "*":
+    origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=r"^https?://.*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Reason: Register API routers protected by Bearer authentication
 app.include_router(upload_router, dependencies=[Depends(verify_bearer_token)])

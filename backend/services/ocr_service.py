@@ -1,25 +1,30 @@
 import os
-import pytesseract
 from PIL import Image
 from typing import List, Dict, Any
-from rapidfuzz import fuzz
 from models.schema import AnswerSegment, BBox
 
-# Reason: Configure custom tesseract binary path if provided in environment
-tess_cmd = os.getenv("TESSERACT_CMD")
-if tess_cmd:
-    pytesseract.pytesseract.tesseract_cmd = tess_cmd
+try:
+    import pytesseract
+    from rapidfuzz import fuzz
+    HAS_OCR = True
+    tess_cmd = os.getenv("TESSERACT_CMD")
+    if tess_cmd:
+        pytesseract.pytesseract.tesseract_cmd = tess_cmd
+except ImportError:
+    HAS_OCR = False
 
-# Reason: Extract line-level bounding boxes from page image via Tesseract OCR
+# Reason: Extract line-level bounding boxes via Tesseract OCR if installed
 def get_ocr_lines(img: Image.Image) -> List[Dict[str, Any]]:
+    if not HAS_OCR:
+        return []
     try:
         data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
         lines = []
-        n_boxes = len(data['text'])
+        n_boxes = len(data.get('text', []))
         img_w, img_h = img.size
 
         for i in range(n_boxes):
-            text = data['text'][i].strip()
+            text = str(data['text'][i]).strip()
             if not text:
                 continue
             x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
@@ -37,8 +42,11 @@ def get_ocr_lines(img: Image.Image) -> List[Dict[str, Any]]:
         print(f"Tesseract OCR fallback: {e}")
         return []
 
-# Reason: Refine answer segment bounding boxes by matching OCR tokens with rapidfuzz
+# Reason: Refine answer segment bounding boxes with OCR tokens or keep Gemini coordinates
 def refine_answer_bboxes(segments: List[AnswerSegment], page_images: List[Image.Image]) -> List[AnswerSegment]:
+    if not HAS_OCR:
+        return segments
+
     refined = []
     for seg in segments:
         page_idx = seg.page - 1
