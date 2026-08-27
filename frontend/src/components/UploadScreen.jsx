@@ -7,7 +7,7 @@ function fmtSize(bytes) {
   return `${Math.max(1, Math.round(bytes / 1024 / 1024))}MB`;
 }
 
-// Reason: UploadScreen supporting independent file uploads and Start Mapping activation
+// Reason: UploadScreen requiring both question paper and answer sheet to enable Start Mapping
 export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
   const targetRef = useRef('question');
   const inputRef = useRef(null);
@@ -35,7 +35,7 @@ export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
     setFiles((prev) => ({ ...prev, [which]: null }));
   };
 
-  const ready = Boolean(files.question || files.answer);
+  const ready = Boolean(files.question && files.answer);
 
   return (
     <div className="upload-wrap">
@@ -129,13 +129,9 @@ export const UploadScreen = ({ files, setFiles, onStartMapping }) => {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: 16, height: 16 }}><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
         </button>
         <p className="start-footer-hint">
-          {files.question && files.answer
-            ? "Both files ready — click Start Mapping to extract and map answers"
-            : files.question
-            ? "Question paper ready — click Start Mapping to extract questions"
-            : files.answer
-            ? "Answer sheet ready — click Start Mapping to process"
-            : "Upload question paper or answer sheet to start"}
+          {ready
+            ? "Both files ready — click Start Mapping to evaluate answers"
+            : "Upload both Question Paper and Answer Sheet to start mapping"}
         </p>
       </div>
 
