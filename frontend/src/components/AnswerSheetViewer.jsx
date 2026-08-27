@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// Reason: AnswerSheetViewer with functional responsive zoom and scrollable answer canvas
+// Reason: AnswerSheetViewer edge-to-edge responsive canvas with dynamic zoom
 export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessionData }) => {
   const [zoom, setZoom] = useState(100);
   const [page, setPage] = useState(1);
@@ -39,7 +39,7 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
   };
 
   const handleZoomChange = (delta) => {
-    setZoom((prev) => Math.max(40, Math.min(250, prev + delta)));
+    setZoom((prev) => Math.max(50, Math.min(250, prev + delta)));
   };
 
   return (
@@ -100,14 +100,14 @@ export const AnswerSheetViewer = ({ selectedQuestionId, onSelectQuestion, sessio
           <div className="sheet-scroll-container">
             <div
               className="sheet-image-canvas"
-              style={{ width: `${Math.round(750 * (zoom / 100))}px` }}
+              style={{ width: `${zoom}%`, minWidth: zoom <= 100 ? '100%' : 'auto' }}
             >
               <img
                 src={currentImg}
                 alt={`Answer Sheet Page ${page}`}
                 className="real-sheet-image"
               />
-              {/* Surya OCR Bounding Box Overlays */}
+              {/* Bounding Box Overlays */}
               {currentPageSegments.map((seg) => {
                 const isActive = activeSegmentIds.includes(seg.id);
                 const b = seg.bbox || { x: 0.05, y: 0.05, w: 0.9, h: 0.1 };
